@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.IdosoDev" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.IdosoDev.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>
