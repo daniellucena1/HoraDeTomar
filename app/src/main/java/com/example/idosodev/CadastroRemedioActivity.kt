@@ -26,8 +26,8 @@ class CadastroRemedioActivity : AppCompatActivity() {
     private lateinit var etDose: TextInputEditText
     private lateinit var etHorario: TextInputEditText
     private lateinit var etPeriodo: TextInputEditText
-    private lateinit var ivSelecionarImagem: ImageView
-    private lateinit var ivTirarFoto: ImageView
+    private lateinit var ivSelecionarImagem: Button
+    private lateinit var ivTirarFoto: Button
     private lateinit var btnCadastrarMedicamento: Button
 
     private val PERMISSION_REQUEST_CODE_CAMERA = 100
@@ -61,8 +61,8 @@ class CadastroRemedioActivity : AppCompatActivity() {
         etDose = findViewById(R.id.et_dose)
         etHorario = findViewById(R.id.et_horario)
         etPeriodo = findViewById(R.id.et_periodo)
-        ivSelecionarImagem = findViewById(R.id.iv_selecionar_imagem)
-        ivTirarFoto = findViewById(R.id.iv_tirar_foto)
+        ivSelecionarImagem = findViewById(R.id.btn_selecionar_foto)
+        ivTirarFoto = findViewById(R.id.btn_tirar_foto)
         btnCadastrarMedicamento = findViewById(R.id.btn_cadastrar_medicamento)
 
         etHorario.setOnClickListener {
