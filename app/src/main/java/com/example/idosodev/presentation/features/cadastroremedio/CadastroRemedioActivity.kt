@@ -1,4 +1,4 @@
-package com.example.idosodev
+package com.example.idosodev.presentation.features.cadastroremedio
 
 import android.Manifest
 import android.app.TimePickerDialog
@@ -9,12 +9,13 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.idosodev.R
+import com.example.idosodev.presentation.features.cadastrousuario.CadastroUsuarioActivity
 import com.google.android.material.textfield.TextInputEditText
 import java.util.Calendar
 import java.util.Locale
@@ -93,7 +94,12 @@ class CadastroRemedioActivity : AppCompatActivity() {
         val minute = calendar.get(Calendar.MINUTE)
 
         val timePickerDialog = TimePickerDialog(this, { _, selectedHour, selectedMinute ->
-            val selectedTime = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute)
+            val selectedTime = String.Companion.format(
+                Locale.getDefault(),
+                "%02d:%02d",
+                selectedHour,
+                selectedMinute
+            )
             etHorario.setText(selectedTime)
         }, hour, minute, true)
         timePickerDialog.show()
@@ -194,5 +200,11 @@ class CadastroRemedioActivity : AppCompatActivity() {
         etDose.text?.clear()
         etHorario.text?.clear()
         etPeriodo.text?.clear()
+
+        val intent = Intent(this, CadastroUsuarioActivity::class.java)
+
+        startActivity(intent)
+
+        finish()
     }
 }

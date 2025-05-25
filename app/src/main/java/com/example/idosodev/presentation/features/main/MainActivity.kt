@@ -1,4 +1,4 @@
-package com.example.idosodev
+package com.example.idosodev.presentation.features.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
