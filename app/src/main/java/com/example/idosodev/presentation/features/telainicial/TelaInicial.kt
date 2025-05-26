@@ -8,6 +8,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.idosodev.R
 
 class TelaInicial : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

@@ -36,7 +36,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun IdosoDevTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    // Dynamic view is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
