@@ -16,11 +16,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.idosodev.R
 import com.example.idosodev.presentation.features.cadastrousuario.CadastroUsuarioActivity
+import com.example.idosodev.presentation.features.main.MainActivity
 import com.google.android.material.textfield.TextInputEditText
 import java.util.Calendar
 import java.util.Locale
 
-class CadastroRemedioActivity : AppCompatActivity() {
+class CadastroRemedioActivity : MainActivity() {
 
     private lateinit var etNomeMedicamento: TextInputEditText
     private lateinit var etVia: TextInputEditText
@@ -93,7 +94,7 @@ class CadastroRemedioActivity : AppCompatActivity() {
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        val timePickerDialog = TimePickerDialog(this, { _, selectedHour, selectedMinute ->
+        val timePickerDialog = TimePickerDialog(this, R.style.MyTimePickerDialogTheme, { _, selectedHour, selectedMinute ->
             val selectedTime = String.Companion.format(
                 Locale.getDefault(),
                 "%02d:%02d",
@@ -102,6 +103,17 @@ class CadastroRemedioActivity : AppCompatActivity() {
             )
             etHorario.setText(selectedTime)
         }, hour, minute, true)
+
+        timePickerDialog.setOnShowListener { dialogInterface ->
+            val dialog = dialogInterface as TimePickerDialog
+
+            val positiveButton = dialog.getButton(TimePickerDialog.BUTTON_POSITIVE)
+            val negativeButton = dialog.getButton(TimePickerDialog.BUTTON_NEGATIVE)
+
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.verde_escuro))
+            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.verde_escuro))
+        }
+
         timePickerDialog.show()
     }
 
@@ -149,9 +161,9 @@ class CadastroRemedioActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
+     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

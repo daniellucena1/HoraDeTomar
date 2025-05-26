@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@android:color/white"
     tools:context=".presentation.features.cadastrousuario.CadastroUsuarioActivity">
 
     <ImageView
@@ -95,7 +95,7 @@
             android:id="@+id/et_data_nascimento"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Endereço do usuário"
+            android:hint="Data de Nascimento"
             android:inputType="textCapWords"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,7 +107,7 @@
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:padding="16dp"
-        app:backgroundTint="@color/green_500"
+        app:backgroundTint="@color/verde_escuro"
         app:cornerRadius="15dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
