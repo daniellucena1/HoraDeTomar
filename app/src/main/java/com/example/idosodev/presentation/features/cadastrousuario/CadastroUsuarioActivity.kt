@@ -7,14 +7,15 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.DatePickerDialog
+import androidx.core.content.ContextCompat
 import java.util.Locale
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.idosodev.R
+import com.example.idosodev.presentation.features.main.MainActivity
 import com.google.android.material.textfield.TextInputEditText
 
-class CadastroUsuarioActivity : AppCompatActivity() {
+class CadastroUsuarioActivity : MainActivity() {
 
     private lateinit var etNomeCompleto: TextInputEditText
     private lateinit var etEndereco: TextInputEditText
@@ -50,12 +51,22 @@ class CadastroUsuarioActivity : AppCompatActivity() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+        val datePickerDialog = DatePickerDialog(this, R.style.MyDatePickerDialogTheme, { _, selectedYear, selectedMonth, selectedDay ->
             val selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
             etDataDeNascimento.setText(selectedDate)
         }, year, month, day)
 
         datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+
+        datePickerDialog.setOnShowListener { dialogInterface ->
+            val dialog = dialogInterface as DatePickerDialog
+
+            val positiveButton = dialog.getButton(DatePickerDialog.BUTTON_POSITIVE)
+            val negativeButton = dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
+
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.verde_escuro))
+            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.verde_escuro))
+        }
 
         datePickerDialog.show()
     }
