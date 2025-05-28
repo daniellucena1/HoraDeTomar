@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="verde_escuro">#00C255</color>
-    <color name="verde_medio">#06B68C</color>
-    <color name="verde_circle_background">#42e08f</color>
-    <color name="branco_puro">#FFFFFF</color>
-    <color name="branco_quase">#FEFEFE</color>
-    <color name="cinza_claro">#F6F6F6</color>
-    <color name="verde_claro_background">#E5FBEA</color>
-    <color name="cinza_texto">#808080</color>
+<!--    <color name="verde_escuro">#00C255</color>-->
+<!--    <color name="verde_medio">#06B68C</color>-->
+    <color name="green_background">#42e08f</color>
+<!--    <color name="branco_puro">#FFFFFF</color>-->
+    <color name="white_background">#FEFEFE</color>
+<!--    <color name="cinza_claro">#F6F6F6</color>-->
+    <color name="green_secondary">#E5FBEA</color>
+<!--    <color name="cinza_texto">#808080</color>-->
+<!--    <color name="black">#FF000000</color>-->
+    <color name="white">#FFFFFFFF</color>
+    <color name="green_primary">#4CAF50</color>
+    <color name="gray_light">#E0E0E0</color>
+    <color name="gray_dark">#757575</color>
     <color name="black">#FF000000</color>
 </resources>

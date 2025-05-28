@@ -110,8 +110,8 @@ class CadastroRemedioActivity : MainActivity() {
             val positiveButton = dialog.getButton(TimePickerDialog.BUTTON_POSITIVE)
             val negativeButton = dialog.getButton(TimePickerDialog.BUTTON_NEGATIVE)
 
-            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.verde_escuro))
-            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.verde_escuro))
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.green_primary))
+            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.green_primary))
         }
 
         timePickerDialog.show()

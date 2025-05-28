@@ -64,8 +64,8 @@ class CadastroUsuarioActivity : MainActivity() {
             val positiveButton = dialog.getButton(DatePickerDialog.BUTTON_POSITIVE)
             val negativeButton = dialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
 
-            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.verde_escuro))
-            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.verde_escuro))
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.green_primary))
+            negativeButton.setTextColor(ContextCompat.getColor(this, R.color.green_primary))
         }
 
         datePickerDialog.show()

@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">IdosoDev</string>
+    <string name="hello_user">Olá, %s</string>
+    <string name="profile_icon_desc">Ícone de perfil</string>
+    <string name="add_icon_desc">Ícone de adicionar</string>
+    <string name="home">Início</string>
+    <string name="medications">Medicamentos</string>
+    <string name="schedule">Agenda</string>
+    <string name="profile">Perfil</string>
+    <string name="settings">Configurações</string>
+    <string name="users_title">Usuários</string>
+    <string name="medications_title">Medicamentos</string>
+    <string name="add_user">Adicionar usuário</string>
+    <string name="add_medicine">Adicionar remédio</string>
+    <string name="user_icon_desc">Ícone do usuário</string>
+    <string name="add_user_icon_desc">Ícone de adicionar usuário</string>
+    <string name="add_medicine_icon_desc">Ícone de adicionar remédio</string>
+    <string name="medicine_icon_desc">Ícone de remédio</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
-        android:title="Início" />
-
-    <item
-        android:id="@+id/navigation_medications"
-        android:icon="@drawable/ic_pill"
-        android:title="Medicamentos" />
-
-    <item
-        android:id="@+id/navigation_schedule"
-        android:icon="@drawable/ic_calendar"
-        android:title="Agenda" />
-
-    <item
-        android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_user"
-        android:title="Perfil" />
-
-    <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings"
-        android:title="Configurações" />
-</menu>
+<com.google.android.material.bottomnavigation.BottomNavigationView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_nav_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    app:menu="@menu/bottom_nav_menu"
+    app:labelVisibilityMode="labeled"
+    android:background="@color/white"
+    app:itemIconTint="@color/bottom_nav_item_colors"
+    app:itemTextColor="@color/bottom_nav_item_colors">
+</com.google.android.material.bottomnavigation.BottomNavigationView>

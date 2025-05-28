@@ -3,50 +3,91 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="135dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/top_bar_background"
-    android:elevation="12dp">
+    android:elevation="30dp"
+    android:padding="16dp">
+
+<!--    <ImageView-->
+<!--        android:id="@+id/ic_user_top"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:src="@drawable/ic_user"-->
+<!--        android:background="@drawable/circle_background"-->
+<!--        android:padding="8dp"-->
+<!--        app:tint="@color/branco_puro"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:elevation="2dp"/>-->
+
+
+<!--    <ImageView-->
+<!--        android:id="@+id/ic_add_top"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:src="@drawable/ic_plus"-->
+<!--        android:background="@drawable/circle_background"-->
+<!--        app:tint="@color/branco_puro"-->
+<!--        android:padding="8dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:elevation="2dp"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/textViewHello"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Olá, <nome do usuário>"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:textColor="@color/branco_puro"-->
+<!--        android:textSize="20sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/ic_user_top"-->
+<!--        app:layout_constraintStart_toStartOf="parent"/>-->
 
     <ImageView
-        android:id="@+id/ic_user_top"
+        android:id="@+id/iv_left_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_user"
         android:background="@drawable/circle_background"
-        android:padding="4dp"
-        app:tint="@color/branco_puro"
-        android:layout_marginStart="16dp"
+        android:padding="8dp"
+        app:tint="@color/white"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="Ícone de demonstração"/>
+
+    <TextView
+        android:id="@+id/tv_greeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_user"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/iv_left_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:elevation="2dp"/>
-
+        android:layout_marginStart="16dp"/>
 
     <ImageView
-        android:id="@+id/ic_add_top"
+        android:id="@+id/iv_right_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_plus"
         android:background="@drawable/circle_background"
-        app:tint="@color/branco_puro"
-        android:padding="4dp"
-        android:layout_marginEnd="16dp"
+        android:padding="8dp"
+        app:tint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:elevation="2dp"/>
+        android:contentDescription="Adicionar" />
 
-    <TextView
-        android:id="@+id/textViewHello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Olá, <nome do usuário>"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/branco_puro"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginStart="16dp"
-        app:layout_constraintTop_toBottomOf="@id/ic_user_top"
-        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -107,7 +107,7 @@
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:padding="16dp"
-        app:backgroundTint="@color/verde_escuro"
+        app:backgroundTint="@color/green_primary"
         app:cornerRadius="15dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"

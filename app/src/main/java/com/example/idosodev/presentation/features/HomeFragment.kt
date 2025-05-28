@@ -1,0 +1,69 @@
+package com.example.idosodev.presentation.features
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.idosodev.databinding.FragmentHomeBinding
+import com.example.idosodev.domain.model.Medicine
+import com.example.idosodev.domain.model.User
+import com.example.idosodev.presentation.adapter.MedicineAdapter
+import com.example.idosodev.presentation.adapter.UserAdapter
+import com.example.idosodev.presentation.features.telainicial.TelaInicialActivity
+
+class HomeFragment : Fragment() {
+
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupUserRecyclerView()
+        setupMedicineRecyclerView()
+
+        // Implementar clique nos cards de adicionar
+        binding.cardAddUser.setOnClickListener {
+            // Lógica para adicionar usuário
+            (activity as? TelaInicialActivity)?.showToast("Adicionar Usuário Clicado")
+        }
+
+        binding.cardAddMedicine.setOnClickListener {
+            // Lógica para adicionar remédio
+            (activity as? TelaInicialActivity)?.showToast("Adicionar Remédio Clicado")
+        }
+    }
+
+    private fun setupUserRecyclerView() {
+        val users = listOf(
+            User("1", "Daniel Torres", "Rua Alcides", "15/04/2004", "Última Atualização: 20/05/2025"),
+            User("2", "Vinicius Menezes", "Nova Caruaru", "15/04/2004", "Última Atualização: 20/05/2025")
+        )
+        binding.rvUsers.layoutManager = LinearLayoutManager(context)
+        binding.rvUsers.adapter = UserAdapter(users)
+    }
+
+    private fun setupMedicineRecyclerView() {
+        val medicines = listOf(
+            Medicine("m1", "Paracetamol", "Dosagem: 1 comprimido","Oral", " 2x ao dia", "Próxima dose: 10:00"),
+            Medicine("m2", "Omeprazol", "Dosagem: 20mg", "Oral", " 1x ao dia antes do café", "Próxima dose: 08:00")
+        )
+        binding.rvMedicines.layoutManager = LinearLayoutManager(context)
+        binding.rvMedicines.adapter = MedicineAdapter(medicines)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
