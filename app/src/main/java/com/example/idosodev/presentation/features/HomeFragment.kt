@@ -32,14 +32,11 @@ class HomeFragment : Fragment() {
         setupUserRecyclerView()
         setupMedicineRecyclerView()
 
-        // Implementar clique nos cards de adicionar
         binding.cardAddUser.setOnClickListener {
-            // Lógica para adicionar usuário
             (activity as? TelaInicialActivity)?.showToast("Adicionar Usuário Clicado")
         }
 
         binding.cardAddMedicine.setOnClickListener {
-            // Lógica para adicionar remédio
             (activity as? TelaInicialActivity)?.showToast("Adicionar Remédio Clicado")
         }
     }

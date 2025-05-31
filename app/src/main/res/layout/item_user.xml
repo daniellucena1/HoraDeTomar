@@ -46,7 +46,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:text="Última atualização: 20/05/2025"
-            android:textColor="@color/gray_light"
+            android:textColor="@color/green_primary"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_user_icon"
