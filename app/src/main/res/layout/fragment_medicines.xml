@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     android:background="@color/white"
-    tools:context=".presentation.features.MedicinesFragment">
+    tools:context=".presentation.view.MedicinesFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

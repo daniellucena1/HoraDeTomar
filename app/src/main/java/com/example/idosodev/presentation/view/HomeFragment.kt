@@ -1,4 +1,4 @@
-package com.example.idosodev.presentation.features
+package com.example.idosodev.presentation.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.idosodev.data.model.Medicine
+import com.example.idosodev.data.model.User
 import com.example.idosodev.databinding.FragmentHomeBinding
-import com.example.idosodev.domain.model.Medicine
-import com.example.idosodev.domain.model.User
-import com.example.idosodev.presentation.adapter.MedicineAdapter
-import com.example.idosodev.presentation.adapter.UserAdapter
-import com.example.idosodev.presentation.features.telainicial.TelaInicialActivity
+import com.example.idosodev.presentation.viewModel.TelaInicialActivity
 
 class HomeFragment : Fragment() {
 
@@ -43,8 +41,20 @@ class HomeFragment : Fragment() {
 
     private fun setupUserRecyclerView() {
         val users = listOf(
-            User("1", "Daniel Torres", "Rua Alcides", "15/04/2004", "Última Atualização: 20/05/2025"),
-            User("2", "Vinicius Menezes", "Nova Caruaru", "15/04/2004", "Última Atualização: 20/05/2025")
+            User(
+                "1",
+                "Daniel Torres",
+                "Rua Alcides",
+                "15/04/2004",
+                "Última Atualização: 20/05/2025"
+            ),
+            User(
+                "2",
+                "Vinicius Menezes",
+                "Nova Caruaru",
+                "15/04/2004",
+                "Última Atualização: 20/05/2025"
+            )
         )
         binding.rvUsers.layoutManager = LinearLayoutManager(context)
         binding.rvUsers.adapter = UserAdapter(users)
@@ -52,8 +62,22 @@ class HomeFragment : Fragment() {
 
     private fun setupMedicineRecyclerView() {
         val medicines = listOf(
-            Medicine("m1", "Paracetamol", "Dosagem: 1 comprimido","Oral", " 2x ao dia", "Próxima dose: 10:00"),
-            Medicine("m2", "Omeprazol", "Dosagem: 20mg", "Oral", " 1x ao dia antes do café", "Próxima dose: 08:00")
+            Medicine(
+                "m1",
+                "Paracetamol",
+                "Dosagem: 1 comprimido",
+                "Oral",
+                " 2x ao dia",
+                "Próxima dose: 10:00"
+            ),
+            Medicine(
+                "m2",
+                "Omeprazol",
+                "Dosagem: 20mg",
+                "Oral",
+                " 1x ao dia antes do café",
+                "Próxima dose: 08:00"
+            )
         )
         binding.rvMedicines.layoutManager = LinearLayoutManager(context)
         binding.rvMedicines.adapter = MedicineAdapter(medicines)

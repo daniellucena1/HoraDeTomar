@@ -1,22 +1,12 @@
-package com.example.idosodev.presentation.features.main
+package com.example.idosodev.presentation.viewModel
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.idosodev.ui.theme.IdosoDevTheme
 import com.google.android.material.textfield.TextInputEditText
 
 fun View.hideKeyboard() {
@@ -33,7 +23,7 @@ abstract class MainActivity : AppCompatActivity() {
         if (ev?.action == MotionEvent.ACTION_DOWN) {
             val view = currentFocus
             if (view is TextInputEditText) {
-                val outReact = android.graphics.Rect()
+                val outReact = Rect()
                 view.getGlobalVisibleRect(outReact)
                 if ( !outReact.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
                     view.clearFocus()

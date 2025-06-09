@@ -1,6 +1,6 @@
-package com.example.idosodev.domain.repository
+package com.example.idosodev.data.repository
 
-import com.example.idosodev.domain.model.User
+import com.example.idosodev.data.model.User
 
 interface UserRepository {
     suspend fun getUsers(): List<User>

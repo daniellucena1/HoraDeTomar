@@ -1,19 +1,14 @@
-package com.example.idosodev.presentation.features.cadastrousuario
+package com.example.idosodev.presentation.viewModel
 
 import android.app.DatePickerDialog
-import java.util.Calendar
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import java.util.Locale
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.idosodev.R
-import com.example.idosodev.presentation.features.main.MainActivity
 import com.google.android.material.textfield.TextInputEditText
+import java.util.Calendar
+import java.util.Locale
 
 class CadastroUsuarioActivity : MainActivity() {
 
@@ -51,10 +46,23 @@ class CadastroUsuarioActivity : MainActivity() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(this, R.style.MyDatePickerDialogTheme, { _, selectedYear, selectedMonth, selectedDay ->
-            val selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
-            etDataDeNascimento.setText(selectedDate)
-        }, year, month, day)
+        val datePickerDialog = DatePickerDialog(
+            this,
+            R.style.MyDatePickerDialogTheme,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = String.Companion.format(
+                    Locale.getDefault(),
+                    "%02d/%02d/%04d",
+                    selectedDay,
+                    selectedMonth + 1,
+                    selectedYear
+                )
+                etDataDeNascimento.setText(selectedDate)
+            },
+            year,
+            month,
+            day
+        )
 
         datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
 

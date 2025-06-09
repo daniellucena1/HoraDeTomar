@@ -1,6 +1,6 @@
-package com.example.idosodev.domain.repository
+package com.example.idosodev.data.repository
 
-import com.example.idosodev.domain.model.Medicine
+import com.example.idosodev.data.model.Medicine
 
 interface MedicineRepository {
     suspend fun getMedicines(): List<Medicine>

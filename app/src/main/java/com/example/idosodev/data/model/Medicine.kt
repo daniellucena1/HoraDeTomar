@@ -1,4 +1,4 @@
-package com.example.idosodev.domain.model
+package com.example.idosodev.data.model
 
 data class Medicine(
     val id: String,
