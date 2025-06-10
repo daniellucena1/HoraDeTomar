@@ -26,6 +26,9 @@
         android:theme="@style/Theme.IdosoDev"
         tools:targetApi="31">
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.viewModel.MedicineScreenActivity"
             android:exported="false" />
         <activity
@@ -44,7 +47,7 @@
         <activity
             android:name=".presentation.features.cadastroremedio.CadastroRemedioActivity"
             android:exported="false"
-            android:theme="@style/Theme.IdosoDev.NoActionBar"></activity>
+            android:theme="@style/Theme.IdosoDev.NoActionBar" />
     </application>
 
 </manifest>

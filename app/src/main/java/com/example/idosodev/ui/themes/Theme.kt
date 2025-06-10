@@ -1,4 +1,4 @@
-package com.example.idosodev.presentation.ui.theme
+package com.example.idosodev.ui.themes
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -33,7 +33,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun IdosoDevTheme(
+fun HoraDoRemedioTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic view is available on Android 12+
     dynamicColor: Boolean = true,
