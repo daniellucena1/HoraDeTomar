@@ -1,5 +1,6 @@
 package com.example.idosodev.ui.components
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,15 +18,15 @@ fun FieldTextOutlined(
     value: String,
     onChange: (String) -> Unit,
     config: OutlinedInputConfig,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
         label = { Text(config.label) },
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp, vertical = 16.dp),
+            .padding(contentPadding),
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(

@@ -1,4 +1,4 @@
-package com.example.idosodev.ui.MedicineRegister
+package com.example.idosodev.ui.medicineRegister
 
 import androidx.lifecycle.ViewModel
 
