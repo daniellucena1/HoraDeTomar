@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.idosodev.ui.MainScreen
 import com.example.idosodev.ui.medicineRegister.RegisterMedicineScreen
 import com.example.idosodev.ui.themes.HoraDoRemedioTheme
 
@@ -19,12 +20,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             HoraDoRemedioTheme {
-                Surface (
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    RegisterMedicineScreen()
-                }
+//                Surface (
+//                    modifier = Modifier.fillMaxWidth(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    RegisterMedicineScreen()
+//                }
+                MainScreen()
             }
         }
     }

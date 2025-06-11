@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,16 +28,12 @@ import com.example.idosodev.ui.themes.green_primary
 import com.example.idosodev.ui.themes.green_secondary
 
 @Composable
-fun UserCard(
-    userName: String,
-    age: Int,
-    modifier: Modifier = Modifier
+fun MedicineHomePageCard(
+    medicineName: String,
+    dose: String,
+    time: String
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
+    Row {
         Box(
             modifier = Modifier
                 .size(50.dp)
@@ -49,9 +44,9 @@ fun UserCard(
                 )
                 .padding(2.dp),
             contentAlignment = Alignment.Center
-        ){
+        ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_user),
+                painter = painterResource(id = R.drawable.ic_pill),
                 contentDescription = "Ícone de Usuário",
                 modifier = Modifier.fillMaxWidth(),
                 tint = black
@@ -66,32 +61,45 @@ fun UserCard(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = userName,
+                text = medicineName,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 fontSize = 16.sp,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = "$age anos de idade",
-                fontWeight = FontWeight.Normal,
-                maxLines = 1,
-                fontSize = 12.sp,
-                overflow = TextOverflow.Ellipsis,
-                color = green_primary
-            )
+
+            Row {
+                Text(
+                    text = "Dosagem: $dose",
+                    fontWeight = FontWeight.Normal,
+                    maxLines = 1,
+                    fontSize = 12.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    color = green_primary,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "Horário: $time",
+                    fontWeight = FontWeight.Normal,
+                    maxLines = 1,
+                    fontSize = 12.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    color = green_primary,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun UserCardPreview() {
+fun MedicineHomePageCardPreview() {
     HoraDoRemedioTheme {
-        UserCard(
-            userName = "Daniel",
-            age = 21
-
+        MedicineHomePageCard(
+            medicineName = "Dipirona",
+            dose = "1 comprimido",
+            time = "12:00"
         )
     }
 }

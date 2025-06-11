@@ -4,7 +4,7 @@ import android.graphics.drawable.Icon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.FlowColumnScopeInstance.weight
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,82 +55,99 @@ fun HeaderSection(
             context.packageName
         )
     }
-    Box(
+
+    val showGreenting = userName.isNotEmpty() && hSize != 110
+
+    Column (
         modifier = modifier
             .fillMaxWidth()
             .height(hSize.dp)
-            .shadow(6.dp, shape = RoundedCornerShape(12.dp))
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(
+                    topStart = 0.dp,
+                    topEnd = 0.dp,
+                    bottomStart = 12.dp,
+                    bottomEnd = 12.dp
+                )
+            )
             .background(
                 color = green_primary,
                 shape = RoundedCornerShape(
                     topStart = 0.dp,
                     topEnd = 0.dp,
-                    bottomEnd = 12.dp,
-                    bottomStart = 12.dp
+                    bottomStart = 12.dp,
+                    bottomEnd = 12.dp
                 )
             )
     ) {
-        Row (
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .weight(1f)
+                .padding(horizontal = 16.dp)
+                .padding(top = 8.dp, bottom = if (showGreenting) 0.dp else 4.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .background(
-                        color = green_background,
-                        shape = CircleShape
-                    )
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                if (iconResId != 0) {
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(
+                            color = green_background,
+                            shape = CircleShape
+                        )
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (iconResId != 0) {
+                        Icon(
+                            painter = painterResource(id = iconResId),
+                            contentDescription = "Ícone de Tela",
+                            modifier = Modifier.fillMaxWidth(),
+                            tint = white
+                        )
+                    }
+
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(
+                            color = green_background,
+                            shape = CircleShape
+                        )
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(
-                        painter = painterResource(id = iconResId),
-                        contentDescription = "Ícone de Tela",
+                        painter = painterResource(id = R.drawable.ic_plus),
+                        contentDescription = "Ícone de Adicionar Usuário",
                         modifier = Modifier.fillMaxWidth(),
                         tint = white
                     )
                 }
-
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .background(
-                        color = green_background,
-                        shape = CircleShape
-                    )
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_plus),
-                    contentDescription = "Ícone de Adicionar Usuário",
-                    modifier = Modifier.fillMaxWidth(),
-                    tint = white
-                )
             }
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Text(
-            text = "Olá, $userName!",
-            color = white,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .fillMaxWidth(),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Start,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        if (showGreenting) {
+            Text(
+                text = "Olá, $userName!",
+                color = white,
+                modifier = Modifier
+                    .padding(start = 16.dp, bottom = 16.dp)
+                    .fillMaxWidth(),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
@@ -140,7 +157,8 @@ fun HeaderSectionPreview() {
     HoraDoRemedioTheme {
         HeaderSection(
             mainIcon = "ic_user",
-            userName = "Daniel"
+            userName = "Daniel",
+            hSize = 120
         )
     }
 }
