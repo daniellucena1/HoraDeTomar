@@ -1,4 +1,4 @@
-package com.example.idosodev.ui.medicineRegister
+package com.example.idosodev.ui.userResgister
 
 import com.example.idosodev.R
 import androidx.compose.foundation.background
@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,17 +37,17 @@ import com.example.idosodev.ui.components.SelectPhotoButton
 import com.example.idosodev.ui.components.TakePhotoButton
 import com.example.idosodev.ui.config.OutlinedInputConfig
 import com.example.idosodev.ui.themes.black
-import com.example.idosodev.ui.themes.green_background
 import com.example.idosodev.ui.themes.green_secondary
 
 @Composable
-fun RegisterMedicineScreen() {
-    var medicineName by remember { mutableStateOf("") }
-    var via by remember { mutableStateOf("") }
-    var dose by remember { mutableStateOf("") }
-    var time by remember { mutableStateOf("") }
-    var period by remember { mutableStateOf("") }
-    var showTimePicker by remember { mutableStateOf(false) }
+fun UserRegisterScreen(
+    onBackClick: () -> Unit,
+    onRegisterClick: () -> Unit
+) {
+    var userName by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
+    var birthDate by remember { mutableStateOf("") }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     Column (
         modifier = Modifier
@@ -70,16 +68,16 @@ fun RegisterMedicineScreen() {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_pill),
-                contentDescription = "Ícone de medicamento",
+                painter = painterResource(id = R.drawable.ic_user),
+                contentDescription = "Ícone de usuário",
                 modifier = Modifier.fillMaxWidth(),
                 tint = black
             )
         }
 
         FieldTextOutlined(
-            value = medicineName,
-            onChange = { medicineName = it},
+            value = userName,
+            onChange = { userName = it},
             config = OutlinedInputConfig(
                 label = "Nome do Medicamento",
                 capitalization = KeyboardCapitalization.Words,
@@ -87,66 +85,38 @@ fun RegisterMedicineScreen() {
             )
         )
 
-        Row (modifier = Modifier.fillMaxWidth()) {
-            FieldTextOutlined(
-                modifier = Modifier.weight(1f),
-                value = via,
-                onChange = { via = it},
-                contentPadding = PaddingValues(start = 32.dp, end = 0.dp, top = 0.dp, bottom = 16.dp),
-                config = OutlinedInputConfig(
-                    label = "Via",
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text
-                )
-            )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            FieldTextOutlined(
-                modifier = Modifier.weight(1f),
-                value = dose,
-                onChange = { dose = it},
-                contentPadding = PaddingValues(start = 0.dp, end = 32.dp, top = 0.dp, bottom = 16.dp),
-                config = OutlinedInputConfig(
-                    label = "Dose",
-                    capitalization = KeyboardCapitalization.None,
-                    keyboardType = KeyboardType.Number
-                )
-            )
-        }
-
         OutlinedTextField(
-            value = time,
+            value = birthDate,
             onValueChange = {},
             readOnly = true,
-            label = { Text("Horário") },
+            label = { Text("Data de Nascimento") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 32.dp, end = 32.dp, bottom = 16.dp, top = 0.dp)
-                .clickable { showTimePicker = true },
+                .clickable { showDatePicker = true },
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
         )
 
-        if ( showTimePicker ) {
+        if ( showDatePicker ) {
             OutlinedTimePickerDialog(
-                onDismissRequest = { showTimePicker = false },
+                onDismissRequest = { showDatePicker = false },
                 onTimeSelected = { hour, minute ->
-                    time = String.format("%02d:%02d", hour, minute)
-                    showTimePicker = false
+                    birthDate = String.format("%02d:%02d", hour, minute)
+                    showDatePicker = false
                 },
                 initialHour = 10,
                 initialMinute = 0,
-                title = "Selecione o horário"
+                title = "Selecione a data de nascimento"
             )
         }
 
         FieldTextOutlined(
-            value = period,
-            onChange = { period = it},
+            value = address,
+            onChange = { address = it},
             contentPadding = PaddingValues(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 16.dp),
             config = OutlinedInputConfig(
-                label = "Período",
+                label = "Endereço",
                 capitalization = KeyboardCapitalization.Words,
                 keyboardType = KeyboardType.Text
             )
@@ -172,10 +142,10 @@ fun RegisterMedicineScreen() {
         }
 
         RegisterButton(
-            onClick = { println("Remédio cadastrado!")},
-            label = "Cadastrar Medicamento",
+            onClick = { println("Usuário cadastrado!")},
+            label = "Cadastrar-se",
 
-        )
+            )
     }
 }
 
@@ -183,6 +153,6 @@ fun RegisterMedicineScreen() {
 @Composable
 fun RegisterMedicineScreenPreview() {
     MaterialTheme {
-        RegisterMedicineScreen()
+        UserRegisterScreen({},{})
     }
 }

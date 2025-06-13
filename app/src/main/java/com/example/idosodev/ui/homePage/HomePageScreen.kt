@@ -41,6 +41,7 @@ fun HomePageScreen(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .verticalScroll(state)
+            .padding(bottom = 8.dp)
     ) {
         HeaderSection(
             mainIcon = "ic_user",
@@ -57,7 +58,7 @@ fun HomePageScreen(modifier: Modifier = Modifier) {
         )
 
         Column (
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp )
         ){
             UserCard(
                 userName = "Daniel Torres",
@@ -95,7 +96,7 @@ fun HomePageScreen(modifier: Modifier = Modifier) {
         )
 
         Column (
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
         ){
             MedicineHomePageCard(
                 medicineName = "Atorvastatina",
