@@ -44,6 +44,7 @@ import com.example.idosodev.ui.themes.black
 import com.example.idosodev.ui.themes.green_primary
 import com.example.idosodev.ui.themes.green_secondary
 import com.example.idosodev.ui.themes.white
+import com.example.idosodev.ui.userResgister.UserRegisterScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +91,7 @@ fun MainScreen() {
             }
         }
     ) { innerPadding ->
-        contentScreen(modifier = Modifier.padding(innerPadding), selectedIndex)
+        contentScreen(modifier = Modifier.padding(innerPadding), selectedScreen = selectedIndex)
     }
 }
 
@@ -99,6 +100,7 @@ fun contentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
     when(selectedScreen) {
          0 -> HomePageScreen(modifier = modifier)
          1 -> RegisterMedicineScreen()
+         3 -> UserRegisterScreen({}, {})
     }
 }
 
