@@ -46,6 +46,8 @@ jobs:
         run: |
           VERSION_NAME=${GITHUB_REF#refs/tags/}
           mv app/build/outputs/apk/release/app-release-unsigned.apk app-${VERSION_NAME}.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.3.2
