@@ -26,6 +26,6 @@ jobs:
           mv app/build/outputs/apk/release/app-release-unsigned.apk app-${VERSION_NAME}.apk
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.3.2
         with:
           files: app-*.apk
