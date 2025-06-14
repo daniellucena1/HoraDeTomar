@@ -53,3 +53,5 @@ jobs:
         uses: softprops/action-gh-release@v2.3.2
         with:
           files: app-*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
