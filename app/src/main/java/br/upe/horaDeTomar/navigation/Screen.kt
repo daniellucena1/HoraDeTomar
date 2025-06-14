@@ -1,6 +1,6 @@
 package br.upe.horaDeTomar.navigation
 
-import com.upe.horaDeTomar.R
+import br.upe.horaDeTomar.R
 
 sealed class Screen(val route: String, val label: String, val icon: Int) {
     object Home : Screen("home", "Início", R.drawable.ic_home)

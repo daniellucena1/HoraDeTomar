@@ -3,8 +3,8 @@ package br.upe.horaDeTomar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.upe.horaDeTomar.ui.MainScreen
-import com.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
+import br.upe.horaDeTomar.ui.MainScreen
+import br.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -21,13 +21,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.upe.horaDeTomar.navigation.bottomNavItems
-import com.upe.horaDeTomar.ui.homePage.HomePageScreen
-import com.upe.horaDeTomar.ui.medicineRegister.RegisterMedicineScreen
-import com.upe.horaDeTomar.ui.themes.black
-import com.upe.horaDeTomar.ui.themes.green_primary
-import com.upe.horaDeTomar.ui.themes.white
-import com.upe.horaDeTomar.ui.userResgister.UserRegisterScreen
+import br.upe.horaDeTomar.navigation.bottomNavItems
+import br.upe.horaDeTomar.ui.homePage.HomePageScreen
+import br.upe.horaDeTomar.ui.medications.MedicationsScreen
+import br.upe.horaDeTomar.ui.medicineRegister.RegisterMedicineScreen
+import br.upe.horaDeTomar.ui.themes.black
+import br.upe.horaDeTomar.ui.themes.green_primary
+import br.upe.horaDeTomar.ui.themes.white
+import br.upe.horaDeTomar.ui.userResgister.UserRegisterScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,7 +83,7 @@ fun MainScreen() {
 fun contentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
     when(selectedScreen) {
          0 -> HomePageScreen(modifier = modifier)
-         1 -> RegisterMedicineScreen()
+         1 -> MedicationsScreen(modifier = modifier)
          3 -> UserRegisterScreen({}, {})
     }
 }

@@ -9,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.upe.horaDeTomar.ui.config.OutlinedInputConfig
+import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 
 @Composable
 fun FieldTextOutlined(

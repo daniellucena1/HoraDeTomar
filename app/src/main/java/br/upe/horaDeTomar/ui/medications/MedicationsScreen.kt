@@ -1,4 +1,4 @@
-package com.upe.horaDeTomar.ui.homePage
+package br.upe.horaDeTomar.ui.medications
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,13 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.upe.horaDeTomar.ui.components.AddHomePageCard
-import com.upe.horaDeTomar.ui.components.HeaderSection
-import com.upe.horaDeTomar.ui.components.MedicineHomePageCard
-import com.upe.horaDeTomar.ui.components.UserCard
-import com.upe.horaDeTomar.ui.themes.black
+import br.upe.horaDeTomar.ui.components.AddHomePageCard
+import br.upe.horaDeTomar.ui.components.HeaderSection
+import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
+import br.upe.horaDeTomar.ui.components.OptionsCard
+import br.upe.horaDeTomar.ui.components.UserCard
+import br.upe.horaDeTomar.ui.themes.black
 
 @Composable
 fun MedicationsScreen(modifier: Modifier = Modifier) {
@@ -37,45 +39,7 @@ fun MedicationsScreen(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "Usuários",
-            fontSize = 16.sp,
-            color = black,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 16.dp, start = 16.dp)
-        )
-
-        Column (
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp )
-        ){
-            UserCard(
-                userName = "Daniel Torres",
-                age = 21,
-                modifier = Modifier.padding(bottom = 10.dp)
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            UserCard(
-                userName = "Vinicius Menezes",
-                age = 21,
-                modifier = Modifier.padding(bottom = 10.dp)
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            UserCard(
-                userName = "Rodrigo Belarmino",
-                age = 21,
-                modifier = Modifier.padding(bottom = 10.dp)
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            AddHomePageCard("Usuário")
-        }
-
-        Text(
-            text = "Remédios",
+            text = "Medicamentos",
             fontSize = 16.sp,
             color = black,
             fontWeight = FontWeight.Bold,
@@ -108,8 +72,18 @@ fun MedicationsScreen(modifier: Modifier = Modifier) {
             )
 
             Spacer(modifier = Modifier.height(10.dp))
-
-            AddHomePageCard("Medicamento")
         }
+
+        OptionsCard(
+            iconName = "ic_plus",
+            label = "Adicionar Remédio",
+            onClick = {}
+        )
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true, apiLevel = 35)
+@Composable
+fun MedicationsScreenPreview() {
+    MedicationsScreen()
 }

@@ -14,11 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.upe.horaDeTomar.ui.components.AddHomePageCard
-import com.upe.horaDeTomar.ui.components.HeaderSection
-import com.upe.horaDeTomar.ui.components.MedicineHomePageCard
-import com.upe.horaDeTomar.ui.components.UserCard
-import com.upe.horaDeTomar.ui.themes.black
+import br.upe.horaDeTomar.ui.components.AddHomePageCard
+import br.upe.horaDeTomar.ui.components.HeaderSection
+import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
+import br.upe.horaDeTomar.ui.components.UserCard
+import br.upe.horaDeTomar.ui.themes.black
 
 @Composable
 fun HomePageScreen(modifier: Modifier = Modifier) {

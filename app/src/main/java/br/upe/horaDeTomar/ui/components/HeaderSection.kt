@@ -26,11 +26,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.upe.horaDeTomar.R
-import com.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
-import com.upe.horaDeTomar.ui.themes.green_background
-import com.upe.horaDeTomar.ui.themes.green_primary
-import com.upe.horaDeTomar.ui.themes.white
+import br.upe.horaDeTomar.R
+import br.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
+import br.upe.horaDeTomar.ui.themes.green_background
+import br.upe.horaDeTomar.ui.themes.green_primary
+import br.upe.horaDeTomar.ui.themes.white
 
 @Composable
 fun HeaderSection(

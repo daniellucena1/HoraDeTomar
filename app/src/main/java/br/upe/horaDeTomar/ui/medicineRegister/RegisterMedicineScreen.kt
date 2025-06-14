@@ -1,6 +1,6 @@
 package br.upe.horaDeTomar.ui.medicineRegister
 
-import com.upe.horaDeTomar.R
+import br.upe.horaDeTomar.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,14 +32,14 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.upe.horaDeTomar.ui.components.FieldTextOutlined
-import com.upe.horaDeTomar.ui.components.OutlinedTimePickerDialog
-import com.upe.horaDeTomar.ui.components.RegisterButton
-import com.upe.horaDeTomar.ui.components.SelectPhotoButton
-import com.upe.horaDeTomar.ui.components.TakePhotoButton
-import com.upe.horaDeTomar.ui.config.OutlinedInputConfig
-import com.upe.horaDeTomar.ui.themes.black
-import com.upe.horaDeTomar.ui.themes.green_secondary
+import br.upe.horaDeTomar.ui.components.FieldTextOutlined
+import br.upe.horaDeTomar.ui.components.OutlinedTimePickerDialog
+import br.upe.horaDeTomar.ui.components.RegisterButton
+import br.upe.horaDeTomar.ui.components.SelectPhotoButton
+import br.upe.horaDeTomar.ui.components.TakePhotoButton
+import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
+import br.upe.horaDeTomar.ui.themes.black
+import br.upe.horaDeTomar.ui.themes.green_secondary
 
 @Composable
 fun RegisterMedicineScreen() {

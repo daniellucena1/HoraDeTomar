@@ -12,10 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.upe.horaDeTomar.R
-import com.upe.horaDeTomar.ui.themes.black
-import com.upe.horaDeTomar.ui.themes.green_primary
-import com.upe.horaDeTomar.ui.themes.green_secondary
+import br.upe.horaDeTomar.R
+import br.upe.horaDeTomar.ui.themes.black
+import br.upe.horaDeTomar.ui.themes.green_primary
+import br.upe.horaDeTomar.ui.themes.green_secondary
 
 @Composable
 fun SelectPhotoButton(
