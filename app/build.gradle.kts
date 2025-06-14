@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.idosodev"
+    namespace = "br.upe.horaDeTomar"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.idosodev"
+        applicationId = "br.upe.horaDeTomar"
         minSdk = 21
         targetSdk = 35
         versionCode = 1
