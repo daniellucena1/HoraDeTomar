@@ -29,6 +29,7 @@ import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_primary
 import br.upe.horaDeTomar.ui.themes.white
 import br.upe.horaDeTomar.ui.userResgister.UserRegisterScreen
+import br.upe.horaDeTomar.ui.users.UsersScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +85,7 @@ fun contentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
     when(selectedScreen) {
          0 -> HomePageScreen(modifier = modifier)
          1 -> MedicationsScreen(modifier = modifier)
-         3 -> UserRegisterScreen({}, {})
+         3 -> UsersScreen(modifier = modifier)
     }
 }
 
