@@ -88,7 +88,7 @@ fun UsersScreen(modifier: Modifier = Modifier) {
             onClick = {},
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
+                .padding(1.dp)
         )
     }
 }
