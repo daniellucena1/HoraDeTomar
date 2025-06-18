@@ -25,6 +25,8 @@ import br.upe.horaDeTomar.navigation.bottomNavItems
 import br.upe.horaDeTomar.ui.homePage.HomePageScreen
 import br.upe.horaDeTomar.ui.medications.MedicationsScreen
 import br.upe.horaDeTomar.ui.medicineRegister.RegisterMedicineScreen
+import br.upe.horaDeTomar.ui.reminders.RemindersScreen
+import br.upe.horaDeTomar.ui.settings.SettingsScreen
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_primary
 import br.upe.horaDeTomar.ui.themes.white
@@ -40,6 +42,7 @@ fun MainScreen() {
 
     Scaffold (
         modifier = Modifier.fillMaxWidth(),
+
         bottomBar = {
             NavigationBar (
                 modifier = Modifier
@@ -83,9 +86,11 @@ fun MainScreen() {
 @Composable
 fun contentScreen(modifier: Modifier = Modifier, selectedScreen: Int) {
     when(selectedScreen) {
-         0 -> HomePageScreen(modifier = modifier)
-         1 -> MedicationsScreen(modifier = modifier)
-         3 -> UsersScreen(modifier = modifier)
+        0 -> HomePageScreen(modifier = modifier)
+        1 -> MedicationsScreen(modifier = modifier)
+        2 -> RemindersScreen(modifier = modifier)
+        3 -> UsersScreen(modifier = modifier)
+        4 -> SettingsScreen(modifier = modifier)
     }
 }
 
