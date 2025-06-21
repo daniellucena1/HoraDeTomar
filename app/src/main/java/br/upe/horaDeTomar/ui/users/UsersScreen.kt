@@ -1,4 +1,4 @@
-package br.upe.horaDeTomar.ui.medications
+package br.upe.horaDeTomar.ui.users
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,64 +20,62 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.upe.horaDeTomar.ui.components.AddHomePageCard
 import br.upe.horaDeTomar.ui.components.HeaderSection
-import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
 import br.upe.horaDeTomar.ui.components.OptionsCard
 import br.upe.horaDeTomar.ui.components.UserCard
 import br.upe.horaDeTomar.ui.themes.black
 
 @Composable
-fun MedicationsScreen(modifier: Modifier = Modifier) {
+fun UsersScreen(modifier: Modifier = Modifier) {
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
-
     Box(
         modifier = modifier
             .fillMaxSize()
             .padding(bottom = 8.dp)
     ) {
-        Column(
+        Column (
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(state)
                 .padding(bottom = 8.dp),
-        ) {
+        ){
             HeaderSection(
-                mainIcon = "ic_pill",
+                mainIcon = "ic_user",
                 hSize = 110,
                 userName = ""
             )
 
             Text(
-                text = "Medicamentos",
+                text = "Usuários",
                 fontSize = 16.sp,
                 color = black,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 16.dp, start = 16.dp)
             )
 
-            Column(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)
-            ) {
-                MedicineHomePageCard(
-                    medicineName = "Atorvastatina",
-                    dose = "1 comprimido",
-                    time = "18:00"
+            Column (
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp )
+            ){
+                UserCard(
+                    userName = "Daniel Torres",
+                    age = 21,
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                MedicineHomePageCard(
-                    medicineName = "Valsartana",
-                    dose = "2 comprimido",
-                    time = "12:00"
+                UserCard(
+                    userName = "Vinicius Menezes",
+                    age = 21,
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                MedicineHomePageCard(
-                    medicineName = "Losartana",
-                    dose = "1 comprimido",
-                    time = "12:00"
+                UserCard(
+                    userName = "Rodrigo Belarmino",
+                    age = 21,
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -86,17 +84,17 @@ fun MedicationsScreen(modifier: Modifier = Modifier) {
 
         OptionsCard(
             iconName = "ic_plus",
+            label = "Adicionar Usuário",
+            onClick = {},
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            onClick = { /* TODO: Implement add medication action */ },
-            label = "Adicionar Remédio"
+                .padding(1.dp)
         )
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true, apiLevel = 35)
 @Composable
-fun MedicationsScreenPreview() {
-    MedicationsScreen()
+fun UsersScreenPreview() {
+    UsersScreen()
 }
