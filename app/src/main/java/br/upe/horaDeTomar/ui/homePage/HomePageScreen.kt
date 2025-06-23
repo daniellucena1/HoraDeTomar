@@ -30,11 +30,6 @@ fun HomePageScreen(modifier: Modifier = Modifier) {
             .verticalScroll(state)
             .padding(bottom = 8.dp)
     ) {
-        HeaderSection(
-            mainIcon = "ic_user",
-            hSize = 120,
-            userName = "Daniel Torres"
-        )
 
         Text(
             text = "Usuários",

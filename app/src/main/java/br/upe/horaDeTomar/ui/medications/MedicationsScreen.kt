@@ -41,12 +41,6 @@ fun MedicationsScreen(modifier: Modifier = Modifier) {
                 .verticalScroll(state)
                 .padding(bottom = 8.dp),
         ) {
-            HeaderSection(
-                mainIcon = "ic_pill",
-                hSize = 110,
-                userName = ""
-            )
-
             Text(
                 text = "Medicamentos",
                 fontSize = 16.sp,

@@ -39,11 +39,6 @@ fun RemindersScreen(modifier: Modifier = Modifier) {
                 .verticalScroll(state)
                 .padding(bottom = 8.dp),
         ){
-            HeaderSection(
-                mainIcon = "ic_calendar",
-                hSize = 110,
-                userName = ""
-            )
 
             Text(
                 text = "Próximos Medicamentos",

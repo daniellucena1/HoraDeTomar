@@ -56,6 +56,9 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.compose.jvmstubs)
     implementation(libs.androidx.room.runtime.android)
+
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

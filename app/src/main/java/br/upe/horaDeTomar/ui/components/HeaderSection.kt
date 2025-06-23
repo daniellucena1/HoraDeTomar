@@ -75,15 +75,15 @@ fun HeaderSection(
             )
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(horizontal = 16.dp)
-                .padding(top = 8.dp, bottom = if (showGreenting) 0.dp else 4.dp),
+                .padding(top = if (showGreenting) 32.dp else 12.dp, bottom = if (showGreenting) 0.dp else 4.dp),
             contentAlignment = Alignment.Center
         ) {
             Row (
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
