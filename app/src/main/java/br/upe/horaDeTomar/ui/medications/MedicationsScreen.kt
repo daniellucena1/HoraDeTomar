@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.upe.horaDeTomar.ui.components.AddHomePageCard
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
@@ -26,7 +27,10 @@ import br.upe.horaDeTomar.ui.components.UserCard
 import br.upe.horaDeTomar.ui.themes.black
 
 @Composable
-fun MedicationsScreen(modifier: Modifier = Modifier) {
+fun MedicationsScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
 
@@ -82,15 +86,9 @@ fun MedicationsScreen(modifier: Modifier = Modifier) {
             iconName = "ic_plus",
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            onClick = { /* TODO: Implement add medication action */ },
+                .padding(end = 16.dp),
+            onClick = { navController.navigate("registerMedication") },
             label = "Adicionar Remédio"
         )
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true, apiLevel = 35)
-@Composable
-fun MedicationsScreenPreview() {
-    MedicationsScreen()
 }

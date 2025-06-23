@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.upe.horaDeTomar.ui.components.AddHomePageCard
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
@@ -21,7 +22,10 @@ import br.upe.horaDeTomar.ui.components.UserCard
 import br.upe.horaDeTomar.ui.themes.black
 
 @Composable
-fun HomePageScreen(modifier: Modifier = Modifier) {
+fun HomePageScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
     Column (
@@ -66,7 +70,10 @@ fun HomePageScreen(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            AddHomePageCard("Usuário")
+            AddHomePageCard(
+                isUser = "Usuário",
+                onClick = { navController.navigate("registerUser") }
+            )
         }
 
         Text(
@@ -104,7 +111,10 @@ fun HomePageScreen(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            AddHomePageCard("Medicamento")
+            AddHomePageCard(
+                isUser = "Medicamento",
+                onClick = { navController.navigate("registerMedication") }
+            )
         }
     }
 }

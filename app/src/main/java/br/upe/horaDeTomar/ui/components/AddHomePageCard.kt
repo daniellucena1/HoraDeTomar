@@ -1,6 +1,7 @@
 package br.upe.horaDeTomar.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,9 +29,12 @@ import br.upe.horaDeTomar.ui.themes.green_secondary
 @Composable
 fun AddHomePageCard(
     isUser: String,
+    onClick: () -> Unit = {},
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

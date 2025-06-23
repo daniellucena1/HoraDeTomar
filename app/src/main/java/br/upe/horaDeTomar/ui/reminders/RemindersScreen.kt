@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.OptionsCard
 import br.upe.horaDeTomar.ui.components.ReminderCard
@@ -25,7 +26,10 @@ import br.upe.horaDeTomar.ui.components.UserCard
 import br.upe.horaDeTomar.ui.themes.black
 
 @Composable
-fun RemindersScreen(modifier: Modifier = Modifier) {
+fun RemindersScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
     Box(
@@ -62,17 +66,11 @@ fun RemindersScreen(modifier: Modifier = Modifier) {
 
         OptionsCard(
             iconName = "ic_plus",
-            label = "Adicionar Usuário",
-            onClick = {},
+            label = "Adicionar Remédio",
+            onClick = {navController.navigate("registerMedication")},
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(1.dp)
+                .padding(horizontal = 16.dp)
         )
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun RemindersScreenPreview() {
-    RemindersScreen(modifier = Modifier.fillMaxSize())
 }
