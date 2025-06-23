@@ -54,10 +54,10 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.compose.jvmstubs)
     implementation(libs.androidx.room.runtime.android)
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

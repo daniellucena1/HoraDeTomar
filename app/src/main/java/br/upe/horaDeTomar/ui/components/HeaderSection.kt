@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +27,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import br.upe.horaDeTomar.R
+import br.upe.horaDeTomar.navigation.TopLevelsDestinations
 import br.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
 import br.upe.horaDeTomar.ui.themes.green_background
 import br.upe.horaDeTomar.ui.themes.green_primary
@@ -35,26 +39,18 @@ import br.upe.horaDeTomar.ui.themes.white
 @Composable
 fun HeaderSection(
     modifier: Modifier = Modifier,
-    hSize: Int = 110,
-    mainIcon: String,
-    userName: String,
+    navController: NavController
 ) {
-    val context = LocalContext.current
-
-    val iconResId = remember (mainIcon) {
-        context.resources.getIdentifier(
-            mainIcon,
-            "drawable",
-            context.packageName
-        )
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route.orEmpty();
+    val currentTopLevel = remember(currentRoute) {
+        TopLevelsDestinations.bottomNavItems.firstOrNull { it.route == currentRoute }
     }
-
-    val showGreenting = userName.isNotEmpty() && hSize != 110
 
     Column (
         modifier = modifier
             .fillMaxWidth()
-            .height(hSize.dp)
+            .height(if (currentRoute == TopLevelsDestinations.Home.route) 140.dp else 110.dp)
             .shadow(
                 elevation = 6.dp,
                 shape = RoundedCornerShape(
@@ -79,7 +75,7 @@ fun HeaderSection(
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(horizontal = 16.dp)
-                .padding(top = if (showGreenting) 32.dp else 12.dp, bottom = if (showGreenting) 0.dp else 4.dp),
+                .padding(top = if (currentRoute == TopLevelsDestinations.Home.route) 32.dp else 12.dp, bottom = if (currentRoute == TopLevelsDestinations.Home.route) 0.dp else 4.dp),
             contentAlignment = Alignment.Center
         ) {
             Row (
@@ -97,15 +93,12 @@ fun HeaderSection(
                         .padding(8.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (iconResId != 0) {
-                        Icon(
-                            painter = painterResource(id = iconResId),
-                            contentDescription = "Ícone de Tela",
-                            modifier = Modifier.fillMaxWidth(),
-                            tint = white
-                        )
-                    }
-
+                    Icon(
+                        painter = painterResource(id = if (currentTopLevel != null) currentTopLevel.icon else R.drawable.ic_user),
+                        contentDescription = "Ícone de Tela",
+                        modifier = Modifier.fillMaxWidth(),
+                        tint = white
+                    )
                 }
 
                 Box(
@@ -127,9 +120,9 @@ fun HeaderSection(
                 }
             }
         }
-        if (showGreenting) {
+        if (currentTopLevel == TopLevelsDestinations.Home) {
             Text(
-                text = "Olá, $userName!",
+                text = "Olá, Daniel Torres!",
                 color = white,
                 modifier = Modifier
                     .padding(start = 16.dp, bottom = 16.dp)
@@ -144,14 +137,14 @@ fun HeaderSection(
     }
 }
 
-@Preview
-@Composable
-fun HeaderSectionPreview() {
-    HoraDoRemedioTheme {
-        HeaderSection(
-            mainIcon = "ic_user",
-            userName = "Daniel",
-            hSize = 120
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun HeaderSectionPreview() {
+//    HoraDoRemedioTheme {
+//        HeaderSection(
+//            mainIcon = "ic_user",
+//            userName = "Daniel",
+//            hSize = 120
+//        )
+//    }
+//}
