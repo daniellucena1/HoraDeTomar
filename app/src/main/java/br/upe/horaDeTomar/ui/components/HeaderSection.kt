@@ -100,24 +100,6 @@ fun HeaderSection(
                         tint = white
                     )
                 }
-
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .background(
-                            color = green_background,
-                            shape = CircleShape
-                        )
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_plus),
-                        contentDescription = "Ícone de Adicionar Usuário",
-                        modifier = Modifier.fillMaxWidth(),
-                        tint = white
-                    )
-                }
             }
         }
         if (currentTopLevel == TopLevelsDestinations.Home) {
@@ -136,15 +118,3 @@ fun HeaderSection(
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun HeaderSectionPreview() {
-//    HoraDoRemedioTheme {
-//        HeaderSection(
-//            mainIcon = "ic_user",
-//            userName = "Daniel",
-//            hSize = 120
-//        )
-//    }
-//}

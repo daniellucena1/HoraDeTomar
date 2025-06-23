@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.upe.horaDeTomar.ui.components.AddHomePageCard
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.OptionsCard
@@ -25,7 +26,10 @@ import br.upe.horaDeTomar.ui.components.UserCard
 import br.upe.horaDeTomar.ui.themes.black
 
 @Composable
-fun UsersScreen(modifier: Modifier = Modifier) {
+fun UsersScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
     Box(
@@ -80,16 +84,10 @@ fun UsersScreen(modifier: Modifier = Modifier) {
         OptionsCard(
             iconName = "ic_plus",
             label = "Adicionar Usuário",
-            onClick = {},
+            onClick = {navController.navigate("registerUser")},
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(1.dp)
+                .padding(horizontal = 16.dp)
         )
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true, apiLevel = 35)
-@Composable
-fun UsersScreenPreview() {
-    UsersScreen()
 }
