@@ -2,6 +2,7 @@ package br.upe.horaDeTomar.data.repositories
 
 import br.upe.horaDeTomar.data.daos.UserDao
 import br.upe.horaDeTomar.data.entities.User
+import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val dao: UserDao) {
 
@@ -24,4 +25,6 @@ class UserRepository(private val dao: UserDao) {
     suspend fun getById(id: Int): User? {
         return dao.getUserById(id)
     }
+
+    val users: Flow<List<User>> = dao.getUsers();
 }
