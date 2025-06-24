@@ -3,6 +3,9 @@ package br.upe.horaDeTomar.ui.userResgister
 import br.upe.horaDeTomar.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +16,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,11 +31,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.upe.horaDeTomar.ui.components.DatePickerModal
 import br.upe.horaDeTomar.ui.components.FieldTextOutlined
 import br.upe.horaDeTomar.ui.components.OutlinedTimePickerDialog
 import br.upe.horaDeTomar.ui.components.RegisterButton
@@ -38,6 +47,10 @@ import br.upe.horaDeTomar.ui.components.TakePhotoButton
 import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_secondary
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun UserRegisterScreen(
@@ -46,8 +59,10 @@ fun UserRegisterScreen(
 ) {
     var userName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
-    var birthDate by remember { mutableStateOf("") }
-    var showDatePicker by remember { mutableStateOf(false) }
+    var selectedDate: String? by remember {
+        mutableStateOf<String?>(null)
+    }
+    var showModal by remember { mutableStateOf(false) }
 
     Column (
         modifier = Modifier
@@ -86,28 +101,42 @@ fun UserRegisterScreen(
         )
 
         OutlinedTextField(
-            value = birthDate,
+            value = selectedDate?.let { selectedDate } ?: "" ,
             onValueChange = {},
-            readOnly = true,
             label = { Text("Data de Nascimento") },
+            placeholder = { Text("Selecione a data") },
+            trailingIcon = {
+                IconButton(onClick = {  }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = "Selecionar data",
+                    )
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 32.dp, end = 32.dp, bottom = 16.dp, top = 0.dp)
-                .clickable { showDatePicker = true },
+                .pointerInput(selectedDate) {
+                    awaitEachGesture {
+                        awaitFirstDown(pass = PointerEventPass.Initial)
+                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                        if ( upEvent != null ) {
+                            showModal = true
+                        }
+                    }
+                }
+                .padding(start = 32.dp, end = 32.dp, bottom = 16.dp, top = 0.dp),
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
         )
 
-        if ( showDatePicker ) {
-            OutlinedTimePickerDialog(
-                onDismissRequest = { showDatePicker = false },
-                onTimeSelected = { hour, minute ->
-                    birthDate = String.format("%02d:%02d", hour, minute)
-                    showDatePicker = false
+        if ( showModal ) {
+            DatePickerModal(
+                onDateSelected = { millis ->
+                    millis?.let {
+                        selectedDate = millis.toBrazilianDateFormat()
+                    }
                 },
-                initialHour = 10,
-                initialMinute = 0,
-                title = "Selecione a data de nascimento"
+                onDismiss = { showModal = false }
             )
         }
 
@@ -148,6 +177,19 @@ fun UserRegisterScreen(
             )
     }
 }
+
+fun Long.toBrazilianDateFormat(
+    pattern: String = "dd/MM/yyyy"
+): String {
+    val date = Date(this)
+    val formatter = SimpleDateFormat(
+        pattern, Locale("pt-br")
+    ).apply {
+        timeZone = TimeZone.getTimeZone("GMT")
+    }
+    return formatter.format(date)
+}
+
 
 @Preview(showBackground = true, showSystemUi = true, apiLevel = 35)
 @Composable
