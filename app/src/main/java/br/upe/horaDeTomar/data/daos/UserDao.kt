@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import br.upe.horaDeTomar.data.entities.User
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -16,6 +17,9 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
     suspend fun getUserById(userId: Int): User?
+
+    @Query("SELECT * FROM users")
+    fun getUsers(): Flow<List<User>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User): Long

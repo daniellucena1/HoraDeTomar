@@ -12,7 +12,9 @@ import br.upe.horaDeTomar.ui.MainScreen
 import br.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
 import br.upe.horaDeTomar.ui.themes.green_primary
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

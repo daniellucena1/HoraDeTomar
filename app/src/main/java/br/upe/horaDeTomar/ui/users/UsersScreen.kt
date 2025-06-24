@@ -12,24 +12,30 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import br.upe.horaDeTomar.ui.components.AddHomePageCard
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.OptionsCard
 import br.upe.horaDeTomar.ui.components.UserCard
 import br.upe.horaDeTomar.ui.themes.black
+import java.util.Date
 
 @Composable
 fun UsersScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: UsersViewModel = hiltViewModel()
 ) {
+    val users by viewModel.users.collectAsState()
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
     Box(
@@ -55,29 +61,16 @@ fun UsersScreen(
             Column (
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp )
             ){
-                UserCard(
-                    userName = "Daniel Torres",
-                    age = 21,
-                    modifier = Modifier.padding(bottom = 10.dp)
-                )
+                users.forEach {
+                    user ->
+                    UserCard(
+                        userName = user.name,
+                        age = 21,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                UserCard(
-                    userName = "Vinicius Menezes",
-                    age = 21,
-                    modifier = Modifier.padding(bottom = 10.dp)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                UserCard(
-                    userName = "Rodrigo Belarmino",
-                    age = 21,
-                    modifier = Modifier.padding(bottom = 10.dp)
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
             }
         }
 
