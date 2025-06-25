@@ -1,5 +1,7 @@
 package br.upe.horaDeTomar.ui.userResgister
 
+import android.annotation.SuppressLint
+import android.widget.Toast
 import br.upe.horaDeTomar.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,17 +29,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import br.upe.horaDeTomar.navigation.TopLevelsDestinations
 import br.upe.horaDeTomar.ui.components.DatePickerModal
 import br.upe.horaDeTomar.ui.components.FieldTextOutlined
 import br.upe.horaDeTomar.ui.components.OutlinedTimePickerDialog
@@ -47,15 +54,20 @@ import br.upe.horaDeTomar.ui.components.TakePhotoButton
 import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_secondary
+import br.upe.horaDeTomar.ui.users.UsersViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun UserRegisterScreen(
     onBackClick: () -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    viewModel: UsersViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     var userName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
@@ -63,6 +75,12 @@ fun UserRegisterScreen(
         mutableStateOf<String?>(null)
     }
     var showModal by remember { mutableStateOf(false) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    var isErrorOnUserName by remember { mutableStateOf(false) }
+    var isErrorOnAddress by remember { mutableStateOf(false) }
+    var isErrorOnDate by remember { mutableStateOf(false) }
 
     Column (
         modifier = Modifier
@@ -92,19 +110,37 @@ fun UserRegisterScreen(
 
         FieldTextOutlined(
             value = userName,
-            onChange = { userName = it},
+            onChange = {
+                userName = it
+                isErrorOnUserName = it.isBlank()
+           },
             config = OutlinedInputConfig(
                 label = "Nome do Medicamento",
                 capitalization = KeyboardCapitalization.Words,
                 keyboardType = KeyboardType.Text
-            )
+            ),
+            isError =  isErrorOnUserName
         )
 
         OutlinedTextField(
             value = selectedDate?.let { selectedDate } ?: "" ,
-            onValueChange = {},
+            onValueChange = {
+                selectedDate = it
+                isErrorOnDate = it.isBlank()
+            },
             label = { Text("Data de Nascimento") },
             placeholder = { Text("Selecione a data") },
+            isError = isErrorOnDate,
+            supportingText = {
+                if (
+                    isErrorOnDate
+                ) {
+                    Text(
+                        text = "Campo obrigatório",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
             trailingIcon = {
                 IconButton(onClick = {  }) {
                     Icon(
@@ -119,7 +155,7 @@ fun UserRegisterScreen(
                     awaitEachGesture {
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                        if ( upEvent != null ) {
+                        if (upEvent != null) {
                             showModal = true
                         }
                     }
@@ -142,7 +178,11 @@ fun UserRegisterScreen(
 
         FieldTextOutlined(
             value = address,
-            onChange = { address = it},
+            onChange = {
+                address = it
+                isErrorOnAddress = it.isBlank()
+            },
+            isError = isErrorOnAddress,
             contentPadding = PaddingValues(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 16.dp),
             config = OutlinedInputConfig(
                 label = "Endereço",
@@ -171,9 +211,25 @@ fun UserRegisterScreen(
         }
 
         RegisterButton(
-            onClick = { println("Usuário cadastrado!")},
+            onClick = {
+                if (userName.isNotBlank() && address.isNotBlank() && selectedDate != null) {
+                    coroutineScope.launch {
+                        viewModel.createUser(userName, address, selectedDate.toString())
+                        navController.navigate(TopLevelsDestinations.Users.route)
+                    }
+                } else {
+                    if (userName.isBlank()) {
+                        isErrorOnUserName = true
+                    }
+                    if (address.isBlank()) {
+                        isErrorOnAddress = true
+                    }
+                    if (selectedDate.isNullOrBlank()) {
+                        isErrorOnDate = true
+                    }
+                }
+            },
             label = "Cadastrar-se",
-
             )
     }
 }
@@ -188,13 +244,4 @@ fun Long.toBrazilianDateFormat(
         timeZone = TimeZone.getTimeZone("GMT")
     }
     return formatter.format(date)
-}
-
-
-@Preview(showBackground = true, showSystemUi = true, apiLevel = 35)
-@Composable
-fun RegisterMedicineScreenPreview() {
-    MaterialTheme {
-        UserRegisterScreen({},{})
-    }
 }

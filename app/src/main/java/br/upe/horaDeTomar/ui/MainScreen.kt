@@ -56,7 +56,7 @@ fun MainScreen() {
                 composable(TopLevelsDestinations.Users.route) { UsersScreen(navController = navController) }
                 composable(TopLevelsDestinations.Settings.route) { SettingsScreen() }
                 composable("registerMedication") { RegisterMedicineScreen() }
-                composable("registerUser") { UserRegisterScreen({}, {}) }
+                composable("registerUser") { UserRegisterScreen({}, {}, navController = navController) }
                 composable("editMedication/{medicationId}") { backStackEntry ->
 //                    val medicationId = backStackEntry.arguments?.getString("medicationId")
 //                    RegisterMedicineScreen(medicationId = medicationId)

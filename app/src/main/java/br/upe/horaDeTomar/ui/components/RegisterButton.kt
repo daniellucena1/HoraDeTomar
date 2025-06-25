@@ -15,7 +15,7 @@ import br.upe.horaDeTomar.ui.themes.white
 
 @Composable
 fun RegisterButton(
-    onClick: () -> Unit,
+    onClick:() -> Unit,
     label: String,
     modifier: Modifier = Modifier
 ) {
