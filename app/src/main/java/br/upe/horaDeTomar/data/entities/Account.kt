@@ -5,5 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "accounts")
 data class Account(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0, val createdAt: Long, val accountName: String
+    @PrimaryKey(autoGenerate = false)
+    val id: Int = 0,
+    val createdAt: Long,
+    val accountName: String
 )

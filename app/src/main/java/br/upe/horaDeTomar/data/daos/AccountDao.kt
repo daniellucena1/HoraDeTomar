@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import br.upe.horaDeTomar.data.entities.Account
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AccountDao {
@@ -21,7 +22,7 @@ interface AccountDao {
     suspend fun delete(account: Account)
 
     @Query("SELECT * FROM accounts")
-    suspend fun getAllAccounts(): List<Account>
+    fun getAllAccounts(): Flow<List<Account>>
 
     @Query("SELECT * FROM accounts WHERE id = :accountId LIMIT 1")
     suspend fun getAccountById(accountId: Int): Account?

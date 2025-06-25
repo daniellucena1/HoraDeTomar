@@ -1,5 +1,7 @@
 package br.upe.horaDeTomar.ui.users
 
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.upe.horaDeTomar.data.entities.User
@@ -18,4 +20,14 @@ class UsersViewModel @Inject constructor(private val repository: UserRepository)
             SharingStarted.WhileSubscribed(5000),
             emptyList()
         )
+
+    suspend fun createUser(userName: String, address: String, birthDate: String) {
+        val user = User(
+            name = userName,
+            address = address,
+            birthDate = birthDate,
+            accountId = 1 // Assumindo uma account ID fixa para simplificação
+        )
+        repository.insert(user)
+    }
 }

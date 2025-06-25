@@ -80,7 +80,8 @@ fun UsersScreen(
             onClick = {navController.navigate("registerUser")},
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
+
         )
     }
 }
