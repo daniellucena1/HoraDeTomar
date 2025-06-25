@@ -11,25 +11,33 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.OptionsCard
 import br.upe.horaDeTomar.ui.components.ReminderCard
 import br.upe.horaDeTomar.ui.components.UserCard
+import br.upe.horaDeTomar.ui.medications.MedicationsViewModel
 import br.upe.horaDeTomar.ui.themes.black
 
 @Composable
 fun RemindersScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: MedicationsViewModel = hiltViewModel()
 ) {
+    // state da collection de medicamentos
+    val medications by viewModel.medications.collectAsState()
+
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
     Box(
@@ -55,12 +63,17 @@ fun RemindersScreen(
             Column (
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp )
             ){
-                ReminderCard()
-                Spacer(modifier = Modifier.height(10.dp))
-                ReminderCard()
-                Spacer(modifier = Modifier.height(10.dp))
-                ReminderCard()
-                Spacer(modifier = Modifier.height(10.dp))
+                medications.forEach {
+                    medication ->
+                    ReminderCard(
+                        name = medication.name,
+                        dose = medication.dose,
+                        via = medication.via,
+                        time = medication.time,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
             }
         }
 

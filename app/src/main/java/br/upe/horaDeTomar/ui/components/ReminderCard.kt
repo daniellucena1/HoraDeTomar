@@ -35,7 +35,11 @@ import br.upe.horaDeTomar.ui.themes.green_secondary
 
 @Composable
 fun ReminderCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    name: String,
+    dose: String,
+    via: String,
+    time: String,
 ) {
     Box(
         modifier = modifier
@@ -75,14 +79,14 @@ fun ReminderCard(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Paracetamol" ,
+                    text = name ,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "8:00",
+                    text = time,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     fontSize = 18.sp,
@@ -98,7 +102,7 @@ fun ReminderCard(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Dosagem: 1 comprimido" ,
+                    text = "Dosagem: $dose comprimido(s)" ,
                     fontWeight = FontWeight.Normal,
                     color = green_primary,
                     maxLines = 1,
@@ -106,7 +110,7 @@ fun ReminderCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "Via: oral",
+                    text = "Via: $via",
                     fontWeight = FontWeight.Normal,
                     maxLines = 1,
                     fontSize = 14.sp,
@@ -116,10 +120,4 @@ fun ReminderCard(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ReminderCardPreview() {
-    ReminderCard(modifier = Modifier)
 }
