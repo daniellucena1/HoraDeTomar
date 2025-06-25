@@ -65,7 +65,7 @@ fun UsersScreen(
                     user ->
                     UserCard(
                         userName = user.name,
-                        age = 21,
+                        age = user.birthDate,
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
 

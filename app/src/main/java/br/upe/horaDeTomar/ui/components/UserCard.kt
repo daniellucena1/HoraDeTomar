@@ -30,7 +30,7 @@ import br.upe.horaDeTomar.ui.themes.green_secondary
 @Composable
 fun UserCard(
     userName: String,
-    age: Int,
+    age: String,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -72,7 +72,7 @@ fun UserCard(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "$age anos de idade",
+                text = age,
                 fontWeight = FontWeight.Normal,
                 maxLines = 1,
                 fontSize = 12.sp,
@@ -89,8 +89,7 @@ fun UserCardPreview() {
     HoraDoRemedioTheme {
         UserCard(
             userName = "Daniel",
-            age = 21
-
+            age = "21"
         )
     }
 }
