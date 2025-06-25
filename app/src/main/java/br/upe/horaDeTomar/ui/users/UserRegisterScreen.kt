@@ -209,7 +209,7 @@ fun UserRegisterScreen(
                 if (userName.isNotBlank() && address.isNotBlank() && selectedDate != null) {
                     coroutineScope.launch {
                         viewModel.createUser(userName, address, selectedDate.toString())
-                        navController.navigate(TopLevelsDestinations.Users.route)
+                        navController.popBackStack()
                     }
                 } else {
                     isErrorOnUserName = userName.isBlank()

@@ -271,7 +271,7 @@ fun RegisterMedicineScreen(
                      selectedTime != null ) {
                     coroutineScope.launch {
                         viewModel.createMedication(medicineName, via, dose, period, selectedTime!!.hour.toString(), selectedTime!!.minute.toString())
-                        navControler.navigate(TopLevelsDestinations.Medications.route)
+                        navControler.popBackStack()
                     }
                 } else {
                     isErrorOnMedicineName = medicineName.isBlank()
