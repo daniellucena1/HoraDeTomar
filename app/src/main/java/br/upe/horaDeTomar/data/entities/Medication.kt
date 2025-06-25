@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.time.Period
 
 @Entity(
     tableName = "medications", foreignKeys = [ForeignKey(
@@ -19,7 +20,6 @@ data class Medication(
     val dose: String,
     val via: String,
     val time: String,
-    val startDate: String,
-    val endDate: String,
+    val period: String,
     val userId: Int
 )

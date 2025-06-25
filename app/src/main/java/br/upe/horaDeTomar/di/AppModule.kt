@@ -7,6 +7,7 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.db.SupportSQLiteDatabase
 import br.upe.horaDeTomar.data.AppDatabase
 import br.upe.horaDeTomar.data.daos.UserDao
+import br.upe.horaDeTomar.data.repositories.MedicationRepository
 import br.upe.horaDeTomar.data.repositories.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -61,5 +62,15 @@ object AppModule {
     @Provides
     fun provideUserRepository(userDao: UserDao): UserRepository {
         return UserRepository(userDao)
+    }
+
+    @Provides
+    fun provideMedicationDao(db: AppDatabase): br.upe.horaDeTomar.data.daos.MedicationDao {
+        return db.medicationDao()
+    }
+
+    @Provides
+    fun provideMedicationRepository(dao: br.upe.horaDeTomar.data.daos.MedicationDao): br.upe.horaDeTomar.data.repositories.MedicationRepository {
+        return MedicationRepository(dao)
     }
 }

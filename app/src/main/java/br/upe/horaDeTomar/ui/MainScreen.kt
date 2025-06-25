@@ -17,10 +17,10 @@ import br.upe.horaDeTomar.navigation.TopLevelsDestinations
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.homePage.HomePageScreen
 import br.upe.horaDeTomar.ui.medications.MedicationsScreen
-import br.upe.horaDeTomar.ui.medicineRegister.RegisterMedicineScreen
+import br.upe.horaDeTomar.ui.medications.RegisterMedicineScreen
 import br.upe.horaDeTomar.ui.reminders.RemindersScreen
 import br.upe.horaDeTomar.ui.settings.SettingsScreen
-import br.upe.horaDeTomar.ui.userResgister.UserRegisterScreen
+import br.upe.horaDeTomar.ui.users.UserRegisterScreen
 import br.upe.horaDeTomar.ui.users.UsersScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,7 +55,7 @@ fun MainScreen() {
                 composable(TopLevelsDestinations.Reminders.route) { RemindersScreen(navController = navController) }
                 composable(TopLevelsDestinations.Users.route) { UsersScreen(navController = navController) }
                 composable(TopLevelsDestinations.Settings.route) { SettingsScreen() }
-                composable("registerMedication") { RegisterMedicineScreen() }
+                composable("registerMedication") { RegisterMedicineScreen(navControler = navController) }
                 composable("registerUser") { UserRegisterScreen({}, {}, navController = navController) }
                 composable("editMedication/{medicationId}") { backStackEntry ->
 //                    val medicationId = backStackEntry.arguments?.getString("medicationId")
