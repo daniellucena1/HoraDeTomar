@@ -1,10 +1,8 @@
-package br.upe.horaDeTomar.ui.userResgister
+package br.upe.horaDeTomar.ui.users
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import br.upe.horaDeTomar.R
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -36,25 +34,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import br.upe.horaDeTomar.navigation.TopLevelsDestinations
 import br.upe.horaDeTomar.ui.components.DatePickerModal
 import br.upe.horaDeTomar.ui.components.FieldTextOutlined
-import br.upe.horaDeTomar.ui.components.OutlinedTimePickerDialog
 import br.upe.horaDeTomar.ui.components.RegisterButton
 import br.upe.horaDeTomar.ui.components.SelectPhotoButton
 import br.upe.horaDeTomar.ui.components.TakePhotoButton
 import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_secondary
-import br.upe.horaDeTomar.ui.users.UsersViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -218,15 +212,9 @@ fun UserRegisterScreen(
                         navController.navigate(TopLevelsDestinations.Users.route)
                     }
                 } else {
-                    if (userName.isBlank()) {
-                        isErrorOnUserName = true
-                    }
-                    if (address.isBlank()) {
-                        isErrorOnAddress = true
-                    }
-                    if (selectedDate.isNullOrBlank()) {
-                        isErrorOnDate = true
-                    }
+                    isErrorOnUserName = userName.isBlank()
+                    isErrorOnAddress = address.isBlank()
+                    isErrorOnDate = selectedDate.isNullOrBlank()
                 }
             },
             label = "Cadastrar-se",

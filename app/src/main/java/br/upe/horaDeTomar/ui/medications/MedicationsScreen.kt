@@ -11,14 +11,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import br.upe.horaDeTomar.data.entities.Medication
 import br.upe.horaDeTomar.ui.components.AddHomePageCard
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
@@ -29,8 +33,13 @@ import br.upe.horaDeTomar.ui.themes.black
 @Composable
 fun MedicationsScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: MedicationsViewModel = hiltViewModel()
 ) {
+    // States e ViewModel
+    val medications by viewModel.medications.collectAsState()
+
+    // State de scroll
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
 
@@ -56,29 +65,16 @@ fun MedicationsScreen(
             Column(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)
             ) {
-                MedicineHomePageCard(
-                    medicineName = "Atorvastatina",
-                    dose = "1 comprimido",
-                    time = "18:00"
-                )
+                medications.forEach {
+                    medication ->
+                    MedicineHomePageCard(
+                        medicineName = medication.name,
+                        dose = medication.dose,
+                        time = medication.time
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
 
-                Spacer(modifier = Modifier.height(10.dp))
-
-                MedicineHomePageCard(
-                    medicineName = "Valsartana",
-                    dose = "2 comprimido",
-                    time = "12:00"
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                MedicineHomePageCard(
-                    medicineName = "Losartana",
-                    dose = "1 comprimido",
-                    time = "12:00"
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
             }
         }
 

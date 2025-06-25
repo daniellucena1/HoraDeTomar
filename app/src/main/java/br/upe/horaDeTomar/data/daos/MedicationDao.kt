@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import br.upe.horaDeTomar.data.entities.Medication
+import br.upe.horaDeTomar.data.entities.User
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MedicationDao {
@@ -25,4 +27,7 @@ interface MedicationDao {
 
     @Query("SELECT * FROM medications WHERE id = :medicationId LIMIT 1")
     suspend fun getMedicationById(medicationId: Int): Medication?
+
+    @Query("SELECT * FROM medications")
+    fun getMedications(): Flow<List<Medication>>
 }

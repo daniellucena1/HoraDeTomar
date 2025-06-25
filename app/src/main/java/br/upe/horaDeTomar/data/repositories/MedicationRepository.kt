@@ -2,6 +2,8 @@ package br.upe.horaDeTomar.data.repositories
 
 import br.upe.horaDeTomar.data.daos.MedicationDao
 import br.upe.horaDeTomar.data.entities.Medication
+import br.upe.horaDeTomar.data.entities.User
+import kotlinx.coroutines.flow.Flow
 
 class MedicationRepository(private val dao: MedicationDao) {
 
@@ -24,4 +26,6 @@ class MedicationRepository(private val dao: MedicationDao) {
     suspend fun getById(id: Int): Medication? {
         return dao.getMedicationById(id)
     }
+
+    val medications: Flow<List<Medication>> = dao.getMedications();
 }
