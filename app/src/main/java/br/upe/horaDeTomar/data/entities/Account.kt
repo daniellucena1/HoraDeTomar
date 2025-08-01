@@ -8,5 +8,6 @@ data class Account(
     @PrimaryKey(autoGenerate = false)
     val id: Int = 0,
     val createdAt: Long,
-    val accountName: String
+    val accountName: String,
+    // TODO: Adicionar lista de usuários
 )

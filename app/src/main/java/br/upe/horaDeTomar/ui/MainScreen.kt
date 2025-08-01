@@ -7,8 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,7 +29,10 @@ import br.upe.horaDeTomar.ui.users.UsersScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
+
+    val hasAccount by viewModel.hasAccount.collectAsState()
+    val accounts by viewModel.accounts.collectAsState()
     val navController = rememberNavController();
 
     Column (modifier = Modifier.fillMaxSize()) {
@@ -34,7 +41,8 @@ fun MainScreen() {
 
             topBar = {
                 HeaderSection(
-                    navController = navController
+                    navController = navController,
+                    userName = if (accounts.isNotEmpty()) accounts[0].accountName else ""
                 )
             },
 
@@ -47,7 +55,7 @@ fun MainScreen() {
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = TopLevelsDestinations.Home.route,
+                startDestination = if (hasAccount) TopLevelsDestinations.Home.route else "registerUser",
                 modifier = Modifier.padding(innerPadding)
             ) {
                 composable(TopLevelsDestinations.Home.route) { HomePageScreen(navController = navController) }
@@ -56,7 +64,21 @@ fun MainScreen() {
                 composable(TopLevelsDestinations.Users.route) { UsersScreen(navController = navController) }
                 composable(TopLevelsDestinations.Settings.route) { SettingsScreen() }
                 composable("registerMedication") { RegisterMedicineScreen(navControler = navController) }
-                composable("registerUser") { UserRegisterScreen({}, {}, navController = navController) }
+                composable("registerUser") {
+                    UserRegisterScreen(
+                        onUserRegistered = {
+                            if (!hasAccount) {
+                                navController.navigate(TopLevelsDestinations.Home.route) {
+                                    popUpTo("registerUser") { inclusive = true }
+                                }
+                            } else {
+                                navController.popBackStack()
+                            }
+                        },
+                        navController = navController,
+                        isFirstTime = !hasAccount
+                    )
+                }
                 composable("editMedication/{medicationId}") { backStackEntry ->
 //                    val medicationId = backStackEntry.arguments?.getString("medicationId")
 //                    RegisterMedicineScreen(medicationId = medicationId)

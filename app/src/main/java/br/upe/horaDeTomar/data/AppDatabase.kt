@@ -13,7 +13,7 @@ import br.upe.horaDeTomar.data.daos.UserDao
 import br.upe.horaDeTomar.data.daos.MedicationDao
 
 @Database(
-    entities = [Account::class, User::class, Medication::class], version = 1
+    entities = [Account::class, User::class, Medication::class], version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun accountDao(): AccountDao

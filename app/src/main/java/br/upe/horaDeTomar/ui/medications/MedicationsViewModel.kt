@@ -25,7 +25,8 @@ class MedicationsViewModel @Inject constructor(private val repository: Medicatio
         dose: String,
         period: String,
         hour: String,
-        minute: String
+        minute: String,
+        selectedDays: List<String>
     ) {
         val medication = Medication(
             name = name,
@@ -33,6 +34,7 @@ class MedicationsViewModel @Inject constructor(private val repository: Medicatio
             dose = dose,
             period = period,
             time = "$hour:$minute",
+            selectedDays = selectedDays.joinToString(","),
             userId = 1 // Assumindo uma user ID fixa para simplificação
         )
         repository.insert(medication)

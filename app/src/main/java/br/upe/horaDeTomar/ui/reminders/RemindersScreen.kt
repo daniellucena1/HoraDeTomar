@@ -70,6 +70,7 @@ fun RemindersScreen(
                         dose = medication.dose,
                         via = medication.via,
                         time = medication.time,
+                        selectedDays = medication.selectedDays,
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Spacer(modifier = Modifier.height(10.dp))

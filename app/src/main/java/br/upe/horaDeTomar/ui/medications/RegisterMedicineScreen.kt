@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -72,6 +73,7 @@ fun RegisterMedicineScreen(
     var via by remember { mutableStateOf("") }
     var dose by remember { mutableStateOf("") }
     var period by remember { mutableStateOf("") }
+    var selectedDays by remember { mutableStateOf<List<String>>(emptyList()) }
 
     // Variáveis de estado para o seletor de horário
     val currentTime = Calendar.getInstance()
@@ -89,9 +91,12 @@ fun RegisterMedicineScreen(
     var isErrorOnDose by remember { mutableStateOf(false) }
     var isErrorOnPeriod by remember { mutableStateOf(false) }
     var isErrorOnSelectedTime by remember { mutableStateOf(false) }
+    var isErrorOnSelectedDays by remember { mutableStateOf(false) }
 
     // CoroutineScope para lidar com ações assíncronas, se necessário
     val coroutineScope = rememberCoroutineScope()
+
+    var showAlarmSettingsDialog by remember { mutableStateOf(false) }
 
     // State para o Scroll
     val state = rememberScrollState()
@@ -174,74 +179,30 @@ fun RegisterMedicineScreen(
             )
         }
 
-        OutlinedTextField(
-            value = "${selectedTime?.hour ?: ""}:${selectedTime?.minute ?: ""}",
-            onValueChange = {
-                isErrorOnSelectedTime = it.isBlank()
-            },
-            label = { Text("Horário") },
-            placeholder = { Text("Selecione o horário") },
-            isError = isErrorOnSelectedTime,
-            supportingText = {
-                if (isErrorOnSelectedTime) {
-                    Text(
-                        text = "Horário não pode ser vazio",
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            },
-            trailingIcon = {
-                IconButton(onClick = {  }) {
-                    Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = "Selecionar horário",
-                    )
-                }
-            },
+        Button(
+            onClick = { showAlarmSettingsDialog = true },
             modifier = Modifier
                 .fillMaxWidth()
-                .pointerInput(selectedTime) {
-                    awaitEachGesture {
-                        awaitFirstDown(pass = PointerEventPass.Initial)
-                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                        if ( upEvent != null ) {
-                            showModal = true
-                        }
-                    }
-                }
-                .padding(start = 32.dp, end = 32.dp, bottom = 16.dp, top = 0.dp),
-            shape = RoundedCornerShape(8.dp),
-            singleLine = true,
-        )
-
-        if (showModal) {
-            TimePickerDialog(
-                onDismiss = { showModal = false },
-                onConfirm = {
-                    selectedTime = timePickerState
-                    showModal = false
-                }
-            ) {
-                TimePicker(
-                    state = timePickerState
-                )
-            }
+                .padding(start = 32.dp, end = 32.dp, bottom = 16.dp, top = 0.dp)
+        ) {
+            Text("Selecionar Horário e Dias")
         }
 
-        FieldTextOutlined(
-            value = period,
-            onChange = {
-                period = it
-                isErrorOnPeriod = it.isBlank()
-            },
-            isError = isErrorOnPeriod,
-            contentPadding = PaddingValues(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 16.dp),
-            config = OutlinedInputConfig(
-                label = "Período",
-                capitalization = KeyboardCapitalization.Words,
-                keyboardType = KeyboardType.Text
-            )
-        )
+//        if (showAlarmSettingsDialog) {
+//            AlarmSettingsDialog(
+//                onDismiss = { showAlarmSettingsDialog = false },
+//                onConfirm = { time, days ->
+//                    selectedTime = time
+//                    selectedDays = days
+//                    showAlarmSettingsDialog = false
+//                },
+//                timePickerState = timePickerState,
+//                selectedDays = selectedDays,
+//                onDaySelected = { selectedDays = it }
+//            )
+//        }
+
+        
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -267,18 +228,18 @@ fun RegisterMedicineScreen(
                 if ( medicineName.isNotBlank() &&
                      via.isNotBlank() &&
                      dose.isNotBlank() &&
-                     period.isNotBlank() &&
-                     selectedTime != null ) {
+                     selectedTime != null &&
+                     selectedDays.isNotEmpty())  {
                     coroutineScope.launch {
-                        viewModel.createMedication(medicineName, via, dose, period, selectedTime!!.hour.toString(), selectedTime!!.minute.toString())
+                        viewModel.createMedication(medicineName, via, dose, "", selectedTime!!.hour.toString(), selectedTime!!.minute.toString(), selectedDays)
                         navControler.popBackStack()
                     }
                 } else {
                     isErrorOnMedicineName = medicineName.isBlank()
                     isErrorOnVia = via.isBlank()
                     isErrorOnDose = dose.isBlank()
-                    isErrorOnPeriod = period.isBlank()
                     isErrorOnSelectedTime = selectedTime == null
+                    isErrorOnSelectedDays = selectedDays.isEmpty()
                 }
             },
             label = "Cadastrar Medicamento",

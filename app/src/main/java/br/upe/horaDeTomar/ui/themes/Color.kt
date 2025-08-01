@@ -2,6 +2,24 @@ package br.upe.horaDeTomar.ui.themes
 
 import androidx.compose.ui.graphics.Color
 
+val md_theme_light_primary = Color(0xFF6DBE4C)
+val md_theme_light_onPrimary = Color(0xFFFFFFFF)
+val md_theme_light_primaryContainer = Color(0xFFDDF3D2)
+val md_theme_light_onPrimaryContainer = Color(0xFF103C08)
+val md_theme_error = Color(0xFFBA1A1A)
+
+val md_theme_light_secondary = Color(0xFFB0B0B0)
+val md_theme_light_onSecondary = Color(0xFF1C1C1C)
+
+val md_theme_light_background = Color(0xFFFFFFFF)
+val md_theme_light_onBackground = Color(0xFF000000)
+
+val md_theme_light_surface = Color(0xFFF5F5F5)
+val md_theme_light_onSurface = Color(0xFF1A1A1A)
+
+val md_theme_light_outline = Color(0xFFE0E0E0)
+val md_theme_light_shadow = Color(0x33000000)
+val md_theme_light_surfaceTint = md_theme_light_primary
 val green_background = Color(0xFF42E08F)
 val white_background = Color(0xFFFEFEFE)
 val green_secondary = Color(0xFFE5FBEA)

@@ -7,6 +7,7 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.db.SupportSQLiteDatabase
 import br.upe.horaDeTomar.data.AppDatabase
 import br.upe.horaDeTomar.data.daos.UserDao
+import br.upe.horaDeTomar.data.repositories.AccountRepository
 import br.upe.horaDeTomar.data.repositories.MedicationRepository
 import br.upe.horaDeTomar.data.repositories.UserRepository
 import dagger.Module
@@ -30,28 +31,7 @@ object AppModule {
             context,
             AppDatabase::class.java,
             "hora_de_tomar.db"
-        )
-            .addCallback(object : RoomDatabase.Callback() {
-                override fun onCreate(db : SupportSQLiteDatabase) {
-                    super.onCreate(db)
-
-                    val database = Room.databaseBuilder(
-                        context,
-                        AppDatabase::class.java,
-                        "hora_de_tomar.db"
-                    ).build()
-                    kotlinx.coroutines.GlobalScope.launch {
-                        database.accountDao().insert(
-                            br.upe.horaDeTomar.data.entities.Account(
-                                id = 1,
-                                createdAt = System.currentTimeMillis(),
-                                accountName = "Default Account",
-                            )
-                        )
-                    }
-                }
-            })
-            .build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
@@ -72,5 +52,15 @@ object AppModule {
     @Provides
     fun provideMedicationRepository(dao: br.upe.horaDeTomar.data.daos.MedicationDao): br.upe.horaDeTomar.data.repositories.MedicationRepository {
         return MedicationRepository(dao)
+    }
+
+    @Provides
+    fun provideAccountDao(db: AppDatabase): br.upe.horaDeTomar.data.daos.AccountDao {
+        return db.accountDao()
+    }
+
+    @Provides
+    fun provideAccountRepository(dao: br.upe.horaDeTomar.data.daos.AccountDao): br.upe.horaDeTomar.data.repositories.AccountRepository {
+        return AccountRepository(dao)
     }
 }
