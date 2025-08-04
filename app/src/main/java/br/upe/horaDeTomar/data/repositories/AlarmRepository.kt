@@ -21,5 +21,5 @@ class AlarmRepository @Inject constructor(
 
     suspend fun getAlarmById(id: Int) = alarmDao.getAlarmById(id)
 
-    fun getAlarmByTime(hour: Int, minute: Int) = alarmDao.getAlarmByTime(hour, minute)
+    fun getAlarmByTime(hour: String, minute: String) = alarmDao.getAlarmByTime(hour, minute)
 }

@@ -33,5 +33,5 @@ interface AlarmDao {
     suspend fun getLastId(): Long?
 
     @Query("SELECT * FROM alarms_list_table WHERE hour = :hour AND minute = :minute")
-    fun getAlarmByTime(hour: Int, minute: Int): Flow<Alarm?>
+    fun getAlarmByTime(hour: String, minute: String): Flow<Alarm?>
 }
