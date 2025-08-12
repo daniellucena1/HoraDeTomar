@@ -63,4 +63,14 @@ object AppModule {
     fun provideAccountRepository(dao: br.upe.horaDeTomar.data.daos.AccountDao): br.upe.horaDeTomar.data.repositories.AccountRepository {
         return AccountRepository(dao)
     }
+
+    @Provides
+    fun provideAlarmDao(db: AppDatabase): br.upe.horaDeTomar.data.daos.AlarmDao {
+        return db.alarmDao()
+    }
+
+    @Provides
+    fun provideAlarmRepository(dao: br.upe.horaDeTomar.data.daos.AlarmDao): br.upe.horaDeTomar.data.repositories.AlarmRepository {
+        return br.upe.horaDeTomar.data.repositories.AlarmRepository(dao)
+    }
 }

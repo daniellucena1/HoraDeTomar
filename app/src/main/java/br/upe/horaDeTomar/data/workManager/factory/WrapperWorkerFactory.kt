@@ -9,7 +9,8 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class WrapperWorkerFactory @Inject constructor(
-    private val workerFactory: Map<Class<out ListenableWorker>, @JvmSuppressWildcards Provider<ChildWorkerFactory>,>,
+    private val workerFactory: Map<Class<out ListenableWorker>,
+            @JvmSuppressWildcards Provider<ChildWorkerFactory>,>,
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,

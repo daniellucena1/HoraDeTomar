@@ -2,6 +2,7 @@ package br.upe.horaDeTomar.data.workManager.worker
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -17,9 +18,9 @@ import kotlinx.coroutines.flow.map
 
 @HiltWorker
 class AlarmCheckerWorker @AssistedInject constructor(
-    @Assisted private val alarmRepository: AlarmRepository,
-    @Assisted private val alarmNotificationHelper: AlarmNotificationHelper,
-    @Assisted private val workRequestManager: WorkRequestManager,
+    private val alarmRepository: AlarmRepository,
+    private val alarmNotificationHelper: AlarmNotificationHelper,
+    private val workRequestManager: WorkRequestManager,
     @Assisted ctx: Context,
     @Assisted params: WorkerParameters,
 ) : CoroutineWorker(ctx, params){
@@ -42,7 +43,8 @@ class AlarmCheckerWorker @AssistedInject constructor(
             workRequestManager.cancelWork(ALARM_CHECKER_TAG)
 
             Result.success()
-        } finally {
+        } catch (thowable: Throwable) {
+            Log.d("[ALARM_CHECKER_WORKER]", "doWork completed, FAILURE")
             Result.failure()
         }
     }

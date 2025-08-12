@@ -70,7 +70,7 @@ fun MedicationsScreen(
                     MedicineHomePageCard(
                         medicineName = medication.name,
                         dose = medication.dose,
-                        time = medication.time
+                        time = "00:00"
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                 }

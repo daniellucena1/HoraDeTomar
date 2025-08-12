@@ -1,5 +1,6 @@
 package br.upe.horaDeTomar.ui.medications
 
+import android.widget.Toast
 import androidx.compose.material3.TimePicker
 import br.upe.horaDeTomar.R
 import androidx.compose.foundation.background
@@ -46,9 +47,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Devices.PIXEL_7
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import br.upe.horaDeTomar.data.entities.Medication
 import br.upe.horaDeTomar.navigation.TopLevelsDestinations
 import br.upe.horaDeTomar.ui.components.FieldTextOutlined
 import br.upe.horaDeTomar.ui.components.RegisterButton
@@ -61,6 +66,12 @@ import br.upe.horaDeTomar.ui.themes.green_secondary
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+@Composable
+@Preview(showBackground = true, device = PIXEL_7, apiLevel = 34)
+fun RegisterMedicineScreenPreview() {
+    RegisterMedicineScreen(navControler = rememberNavController())
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterMedicineScreen(
@@ -72,7 +83,6 @@ fun RegisterMedicineScreen(
     var medicineName by remember { mutableStateOf("") }
     var via by remember { mutableStateOf("") }
     var dose by remember { mutableStateOf("") }
-    var period by remember { mutableStateOf("") }
     var selectedDays by remember { mutableStateOf<List<String>>(emptyList()) }
 
     // Variáveis de estado para o seletor de horário
@@ -188,21 +198,18 @@ fun RegisterMedicineScreen(
             Text("Selecionar Horário e Dias")
         }
 
-//        if (showAlarmSettingsDialog) {
-//            AlarmSettingsDialog(
-//                onDismiss = { showAlarmSettingsDialog = false },
-//                onConfirm = { time, days ->
-//                    selectedTime = time
-//                    selectedDays = days
-//                    showAlarmSettingsDialog = false
-//                },
-//                timePickerState = timePickerState,
-//                selectedDays = selectedDays,
-//                onDaySelected = { selectedDays = it }
-//            )
-//        }
-
-        
+            if (showAlarmSettingsDialog) {
+                CreateAlarmDialog(
+                    alarmCreationState = viewModel.alarmCreationState,
+                    alarmActions = viewModel,
+                    navigateToAlarmList = {
+                        showAlarmSettingsDialog = false
+                    },
+                    onDismissRequest = {
+                        showAlarmSettingsDialog = false
+                    }
+                )
+            }
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -227,19 +234,23 @@ fun RegisterMedicineScreen(
             onClick = {
                 if ( medicineName.isNotBlank() &&
                      via.isNotBlank() &&
-                     dose.isNotBlank() &&
-                     selectedTime != null &&
-                     selectedDays.isNotEmpty())  {
+                     dose.isNotBlank())  {
                     coroutineScope.launch {
-                        viewModel.createMedication(medicineName, via, dose, "", selectedTime!!.hour.toString(), selectedTime!!.minute.toString(), selectedDays)
+                        val medication = Medication(
+                            name = medicineName,
+                            via = via,
+                            dose = dose,
+                            userId = 1 // Assumindo uma user ID fixa para simplificação
+                        )
+                        viewModel.updateMedicationCreationState(medication)
+                        viewModel.createMedication()
                         navControler.popBackStack()
                     }
+
                 } else {
                     isErrorOnMedicineName = medicineName.isBlank()
                     isErrorOnVia = via.isBlank()
                     isErrorOnDose = dose.isBlank()
-                    isErrorOnSelectedTime = selectedTime == null
-                    isErrorOnSelectedDays = selectedDays.isEmpty()
                 }
             },
             label = "Cadastrar Medicamento",

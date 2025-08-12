@@ -69,8 +69,8 @@ fun RemindersScreen(
                         name = medication.name,
                         dose = medication.dose,
                         via = medication.via,
-                        time = medication.time,
-                        selectedDays = medication.selectedDays,
+                        time = "00:00",
+                        selectedDays = "Seg, Ter, Qua",
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Spacer(modifier = Modifier.height(10.dp))

@@ -22,8 +22,5 @@ data class Medication(
     val name: String,
     val dose: String,
     val via: String,
-    val time: String,
-    val period: String,
-    val selectedDays: String,
     val userId: Int
 )

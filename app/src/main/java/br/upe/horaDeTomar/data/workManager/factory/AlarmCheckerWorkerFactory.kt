@@ -15,6 +15,12 @@ class AlarmCheckerWorkerFactory @Inject constructor(
     private val workRequestManager: WorkRequestManager
 ) : ChildWorkerFactory {
     override fun create(appContext: Context, params: WorkerParameters) : ListenableWorker {
-        return AlarmCheckerWorker(alarmRepository, alarmNotificationHelper, workRequestManager, appContext, params)
+        return AlarmCheckerWorker(
+            alarmRepository,
+            alarmNotificationHelper,
+            workRequestManager,
+            appContext,
+            params
+        )
     }
 }

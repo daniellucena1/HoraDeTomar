@@ -1,10 +1,5 @@
-package br.upe.horaDeTomar.ui.reminders
+package br.upe.horaDeTomar.ui.medications
 
-import android.annotation.SuppressLint
-import androidx.appcompat.widget.DialogTitle
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.ui.Alignment.Companion.BottomCenter
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,13 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -26,8 +16,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -50,14 +37,11 @@ import br.upe.horaDeTomar.data.entities.Alarm
 import br.upe.horaDeTomar.ui.components.CustomChip
 import br.upe.horaDeTomar.ui.components.NumberPicker
 import br.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
-import br.upe.horaDeTomar.ui.themes.green_primary
-import br.upe.horaDeTomar.ui.themes.md_theme_light_background
 import br.upe.horaDeTomar.ui.themes.md_theme_light_primaryContainer
 import br.upe.horaDeTomar.ui.themes.white
 import com.google.gson.Gson
 import br.upe.horaDeTomar.R
-import kotlinx.coroutines.launch
-import kotlin.math.round
+import br.upe.horaDeTomar.ui.medications.AlarmActions
 
 @Preview(device = Devices.PIXEL_4_XL)
 @Composable
@@ -140,7 +124,7 @@ fun CreateAlarmScreen(
             Buttons(
 
                 navigateToAlarmList = navigateToAlarmList,
-                save = { alarmActions.save() }
+                save = navigateToAlarmList
 
             )
         }
@@ -301,7 +285,7 @@ private fun Buttons(
                 }
             ) {
                 Text(
-                    text = stringResource(id = br.upe.horaDeTomar.R.string.cancel),
+                    text = stringResource(id = R.string.cancel),
                 )
             }
             TextButton(
@@ -311,7 +295,7 @@ private fun Buttons(
                 }
             ) {
                 Text(
-                    text = stringResource(id = br.upe.horaDeTomar.R.string.save),
+                    text = stringResource(id = R.string.save),
                 )
             }
         }
