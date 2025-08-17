@@ -13,8 +13,8 @@ import br.upe.horaDeTomar.data.receiver.DAYS_SELECTED
 import br.upe.horaDeTomar.data.receiver.HOUR
 import br.upe.horaDeTomar.data.receiver.IS_RECURRING
 import br.upe.horaDeTomar.data.receiver.MINUTE
-import br.upe.horaDeTomar.data.workManager.worker.ALARM_CHECKER_TAG
-import br.upe.horaDeTomar.data.workManager.worker.AlarmCheckerWorker
+import br.upe.horaDeTomar.data.worker.ALARM_CHECKER_TAG
+import br.upe.horaDeTomar.data.worker.AlarmCheckerWorker
 import br.upe.horaDeTomar.util.GlobalProperties.pendingIntentFlagg
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.asFlow

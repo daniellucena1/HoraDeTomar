@@ -5,13 +5,14 @@ import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import android.content.Context
+import androidx.work.CoroutineWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class WorkRequestManager @Inject constructor(
     @ApplicationContext val applicationContext: Context
 ) {
-    inline fun <reified T : ListenableWorker> enqueueWorker(tag: String, inputData: Data? = null) {
+    inline fun <reified T : CoroutineWorker> enqueueWorker(tag: String, inputData: Data? = null) {
         val workRequest = OneTimeWorkRequestBuilder<T>().addTag(tag)
 
         inputData?.let {

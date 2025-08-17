@@ -1,6 +1,7 @@
-package br.upe.horaDeTomar.data.workManager.worker
+package br.upe.horaDeTomar.data.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -14,9 +15,9 @@ import kotlinx.coroutines.flow.map
 
 @HiltWorker
 class RescheduleAlarmWorker @AssistedInject constructor(
-    @Assisted private val alarmRepository: AlarmRepository,
-    @Assisted private val scheduleAlarmManager: ScheduleAlarmManager,
-    @Assisted private val workRequestManager: WorkRequestManager,
+    private val alarmRepository: AlarmRepository,
+    private val scheduleAlarmManager: ScheduleAlarmManager,
+    private val workRequestManager: WorkRequestManager,
     @Assisted ctx: Context,
     @Assisted params: WorkerParameters,
 ) : CoroutineWorker(ctx, params){
@@ -37,6 +38,7 @@ class RescheduleAlarmWorker @AssistedInject constructor(
 
             Result.success()
         } catch (throwable: Throwable){
+            Log.d("[RESCHEDULE ALARM]", "doWork FAILURE", throwable)
             Result.failure()
         }
     }

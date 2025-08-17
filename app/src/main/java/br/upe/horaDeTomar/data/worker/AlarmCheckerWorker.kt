@@ -1,4 +1,4 @@
-package br.upe.horaDeTomar.data.workManager.worker
+package br.upe.horaDeTomar.data.worker
 
 import android.content.Context
 import android.os.Build
@@ -9,7 +9,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import br.upe.horaDeTomar.data.manager.WorkRequestManager
 import br.upe.horaDeTomar.data.repositories.AlarmRepository
-import br.upe.horaDeTomar.ui.reminders.RemindersScreen
 import br.upe.horaDeTomar.util.helper.AlarmNotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -44,7 +43,7 @@ class AlarmCheckerWorker @AssistedInject constructor(
 
             Result.success()
         } catch (thowable: Throwable) {
-            Log.d("[ALARM_CHECKER_WORKER]", "doWork completed, FAILURE")
+            Log.d("[ALARM_CHECKER_WORKER]", "doWork completed, FAILURE", thowable)
             Result.failure()
         }
     }

@@ -1,9 +1,10 @@
-package br.upe.horaDeTomar.data.workManager.worker
+package br.upe.horaDeTomar.data.worker
 
 import android.Manifest
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -11,8 +12,6 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import br.upe.horaDeTomar.data.manager.WorkRequestManager
 import br.upe.horaDeTomar.data.receiver.MEDICATION_ID
-import br.upe.horaDeTomar.data.receiver.HOUR
-import br.upe.horaDeTomar.data.receiver.MINUTE
 import br.upe.horaDeTomar.data.repositories.AlarmRepository
 import br.upe.horaDeTomar.util.helper.ALARM_WORKER_NOTIFICATION_ID
 import br.upe.horaDeTomar.util.helper.AlarmNotificationHelper
@@ -24,10 +23,10 @@ import kotlinx.coroutines.flow.collectLatest
 
 @HiltWorker
 class AlarmWorker @AssistedInject constructor (
-    @Assisted private val alarmRepository: AlarmRepository,
-    @Assisted private val alarmNotificationHelper: AlarmNotificationHelper,
-    @Assisted private val mediaPlayerHelper: MediaPlayerHelper,
-    @Assisted private val workRequestManager: WorkRequestManager,
+    private val alarmRepository: AlarmRepository,
+    private val alarmNotificationHelper: AlarmNotificationHelper,
+    private val mediaPlayerHelper: MediaPlayerHelper,
+    private val workRequestManager: WorkRequestManager,
     @Assisted ctx: Context,
     @Assisted params: WorkerParameters,
 ) : CoroutineWorker(ctx, params){
@@ -62,6 +61,12 @@ class AlarmWorker @AssistedInject constructor (
             alarmNotificationHelper.removeAlarmWorkerNotification()
             mediaPlayerHelper.release()
             workRequestManager.enqueueWorker<AlarmCheckerWorker>(ALARM_CHECKER_TAG)
+            Result.failure()
+        } catch (t: Throwable) {
+            alarmNotificationHelper.removeAlarmWorkerNotification()
+            mediaPlayerHelper.release()
+            workRequestManager.enqueueWorker<AlarmCheckerWorker>(ALARM_CHECKER_TAG)
+            Log.d("[ALARM WORKER]", "doWork FAILURE", t)
             Result.failure()
         }
     }

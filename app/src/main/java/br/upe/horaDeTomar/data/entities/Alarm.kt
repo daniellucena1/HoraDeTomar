@@ -29,7 +29,7 @@ data class Alarm (
     var id: Int = 0,
     var hour: String = "00",
     var minute: String = "00",
-    var isScheduled: Boolean = false,
+    var isScheduled: Boolean = true,
     var daysSelectedJson: String = Gson().toJson(
         mapOf(
             "Dom" to false,

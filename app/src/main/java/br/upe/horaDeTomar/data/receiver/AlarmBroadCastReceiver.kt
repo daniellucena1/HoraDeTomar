@@ -4,13 +4,12 @@ import androidx.work.Data
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.work.impl.RescheduleMigration
 import br.upe.horaDeTomar.data.manager.ScheduleAlarmManager
 import br.upe.horaDeTomar.data.manager.WorkRequestManager
-import br.upe.horaDeTomar.data.workManager.worker.ALARM_TAG
-import br.upe.horaDeTomar.data.workManager.worker.AlarmWorker
-import br.upe.horaDeTomar.data.workManager.worker.RESCHEDULE_ALARM_TAG
-import br.upe.horaDeTomar.data.workManager.worker.RescheduleAlarmWorker
+import br.upe.horaDeTomar.data.worker.ALARM_TAG
+import br.upe.horaDeTomar.data.worker.AlarmWorker
+import br.upe.horaDeTomar.data.worker.RESCHEDULE_ALARM_TAG
+import br.upe.horaDeTomar.data.worker.RescheduleAlarmWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

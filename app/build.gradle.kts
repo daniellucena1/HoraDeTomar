@@ -65,6 +65,7 @@ dependencies {
     ksp("com.google.dagger:hilt-compiler:2.56.2")
     ksp("androidx.room:room-compiler:2.7.2")
     implementation("androidx.hilt:hilt-work:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     // Para Jetpack Compose
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
