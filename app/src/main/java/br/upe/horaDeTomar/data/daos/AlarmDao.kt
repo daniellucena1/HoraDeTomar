@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AlarmDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(alarm: Alarm)
+    suspend fun insert(alarm: Alarm) : Long
 
     @Delete
     suspend fun delete(alarm: Alarm)

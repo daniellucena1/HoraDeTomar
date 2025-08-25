@@ -9,7 +9,7 @@ class AlarmRepository @Inject constructor(
 ){
     val alarmList = alarmDao.getAlarmsList().distinctUntilChanged()
 
-    suspend fun insert(alarm: Alarm) = alarmDao.insert(alarm)
+    suspend fun insert(alarm: Alarm) : Long = alarmDao.insert(alarm)
 
     suspend fun update(alarm: Alarm) = alarmDao.update(alarm)
 

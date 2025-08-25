@@ -39,8 +39,6 @@ class AlarmCheckerWorker @AssistedInject constructor(
                 alarmNotificationHelper.removeScheduledAlarmNotification()
             }
 
-            workRequestManager.cancelWork(ALARM_CHECKER_TAG)
-
             Result.success()
         } catch (thowable: Throwable) {
             Log.d("[ALARM_CHECKER_WORKER]", "doWork completed, FAILURE", thowable)

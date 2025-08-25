@@ -1,5 +1,6 @@
 package br.upe.horaDeTomar.data
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -21,5 +22,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun accountDao(): AccountDao
     abstract fun userDao(): UserDao
     abstract fun medicationDao(): MedicationDao
+
     abstract fun alarmDao(): AlarmDao
 }

@@ -16,6 +16,12 @@
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
+    <!-- Adicionados para alarmes -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:name=".MyApp"
         android:allowBackup="true"
@@ -27,6 +33,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IdosoDev"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -43,7 +50,19 @@
             android:exported="false"
             tools:node="remove">
         </provider>
-        
+
+        <!-- Receiver de alarmes -->
+        <receiver
+            android:name=".data.receiver.AlarmBroadCastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="br.upe.horaDeTomar.ACTION_TRIGGERED"/>
+                <action android:name="br.upe.horaDeTomar.ACTION_DISMISS"/>
+                <action android:name="br.upe.horaDeTomar.ACTION_SNOOZE"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

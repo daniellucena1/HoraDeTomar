@@ -1,20 +1,34 @@
 package br.upe.horaDeTomar.data.receiver
 
+import android.app.PendingIntent
 import androidx.work.Data
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import br.upe.horaDeTomar.data.AppDatabase
+import br.upe.horaDeTomar.data.daos.AlarmDao
+import br.upe.horaDeTomar.data.entities.Alarm
 import br.upe.horaDeTomar.data.manager.ScheduleAlarmManager
 import br.upe.horaDeTomar.data.manager.WorkRequestManager
+import br.upe.horaDeTomar.data.worker.ALARM_CHECKER_TAG
 import br.upe.horaDeTomar.data.worker.ALARM_TAG
+import br.upe.horaDeTomar.data.worker.AlarmCheckerWorker
 import br.upe.horaDeTomar.data.worker.AlarmWorker
 import br.upe.horaDeTomar.data.worker.RESCHEDULE_ALARM_TAG
 import br.upe.horaDeTomar.data.worker.RescheduleAlarmWorker
+import br.upe.horaDeTomar.util.helper.AlarmNotificationHelper
+import br.upe.horaDeTomar.util.helper.MediaPlayerHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.HashMap
@@ -22,61 +36,115 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlarmBroadCastReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var notificationHelper: AlarmNotificationHelper
+
+    @Inject
+    lateinit var mediaPlayerHelper: MediaPlayerHelper
+
+    @Inject
+    lateinit var alarmDao: AlarmDao
+
     @Inject
     lateinit var scheduleAlarmManager: ScheduleAlarmManager
 
     @Inject
     lateinit var workRequestManager: WorkRequestManager
 
-    private val broadcastReceiverScope = CoroutineScope(SupervisorJob())
+    @RequiresApi(Build.VERSION_CODES.M)
+    @OptIn(DelicateCoroutinesApi::class)
+    override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent == null || context == null) return
 
-    override fun onReceive(p0: Context?, p1: Intent?) {
-        val pendingResult: PendingResult = goAsync()
+        val pendingResult = goAsync()
 
-        broadcastReceiverScope.launch(Dispatchers.Default) {
-            try {
-                p1?.let { intent ->
-                    when (intent.action) {
-                        "android.intent.action.BOOT_COMPLETED" -> {
-                            workRequestManager.enqueueWorker<RescheduleAlarmWorker>(
-                                RESCHEDULE_ALARM_TAG,
-                            )
-                        }
+        CoroutineScope(Dispatchers.IO).launch {
+            when (intent.action) {
+                ACTION_ALARM_TRIGGERED -> {
+                    val alarmId = intent.getIntExtra("ALARM_ID", -1)
+                    val alarm = if (alarmId != -1) alarmDao.getAlarmById(alarmId) else null
 
-                        ACTION_DISMISS -> workRequestManager.cancelWork("alarmTag")
-                        ACTION_SNOOZE -> {
-                            scheduleAlarmManager.snooze(1)
-                            workRequestManager.cancelWork("alarmTag")
-                        }
-                        else -> {
-                            val shouldStartWorker = alarmIsToday(intent)
-                            val inputData = Data.Builder()
-                                .putString(HOUR, intent.getStringExtra(HOUR))
-                                .putString(MEDICATION_ID, intent.getStringExtra(MEDICATION_ID))
-                                .putString(MINUTE, intent.getStringExtra(MINUTE))
-                                .build()
-                            if (shouldStartWorker) {
-                                workRequestManager.enqueueWorker<AlarmWorker>(
-                                    ALARM_TAG,
-                                    inputData,
-                                )
-                            }
+                    alarm?.let {
+                        // Atualiza status do alarme
+                        alarmDao.update(it.copy(isScheduled = true))
+                        scheduleAlarmManager.schedule(it)
+
+                        val notification = notificationHelper.getAlarmBaseNotification(it.medicationId.toString(), "${it.hour}:${it.minute}").build()
+                        notificationHelper.showAlarmNotification(notification)
+                        // Toca som e vibração
+                        mediaPlayerHelper.prepare()
+                        mediaPlayerHelper.start()
+                    }
+                }
+                ACTION_DISMISS -> {
+                    notificationHelper.removeAlarmWorkerNotification()
+
+                    val alarmId = intent.getIntExtra("ALARM_ID", -1)
+                    if (alarmId != -1) {
+                        val alarm = alarmDao.getAlarmById(alarmId)
+                        if (alarm != null) {
+                            alarmDao.update(alarm.copy(isScheduled = false))
+                            scheduleAlarmManager.cancel(alarm)
+                            workRequestManager.cancelWork(ALARM_CHECKER_TAG)
                         }
                     }
                 }
-            } finally {
-                pendingResult.finish()
-                broadcastReceiverScope.cancel()
+
+                ACTION_SNOOZE -> {
+                    notificationHelper.removeAlarmWorkerNotification()
+
+                    val alarmId = intent.getIntExtra("ALARM_ID", -1)
+                    if (alarmId != -1) {
+                        val alarm = alarmDao.getAlarmById(alarmId)
+                        if (alarm != null) {
+                            val calendar = Calendar.getInstance().apply {
+                                timeInMillis = System.currentTimeMillis()
+                                add(Calendar.MINUTE, 5)
+                            }
+
+                            val snoozedAlarm = alarm.copy(
+                                hour = String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY)),
+                                minute = String.format("%02d", calendar.get(Calendar.MINUTE)),
+                                isScheduled = true
+                            )
+
+                            alarmDao.update(snoozedAlarm)
+
+                            scheduleAlarmManager.schedule(snoozedAlarm)
+
+                            workRequestManager.enqueueWorker<AlarmCheckerWorker>(ALARM_CHECKER_TAG)
+                        }
+                    }
+                }
             }
+            pendingResult.finish()
+        }
+    }
+
+    companion object {
+        const val ACTION_DISMISS = "br.upe.horaDeTomar.ACTIONS_DISMISS"
+        const val ACTION_SNOOZE = "br.upe.horaDeTomar.ACTION_SNOOZE"
+
+        const val ACTION_ALARM_TRIGGERED = "br.upe.horaDeTomar.ACTION_ALARM_TRIGGERED"
+
+        fun Class<*>.setIntentAction(
+            actionName: String,
+            requestCode: Int,
+            context: Context
+        ): PendingIntent {
+            val intent = Intent(context, this).apply { action = actionName }
+            return PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
         }
     }
 }
 
-private fun alarmIsToday(intent: Intent): Boolean {
-    val daysSelected = intent.extras?.getSerializable(DAYS_SELECTED) as? HashMap<String, Boolean>
-    val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-    return daysSelected?.get(getDayOfWeek(today)) ?: false
-}
+
 private fun getDayOfWeek(day: Int): String {
     return when (day) {
         Calendar.SUNDAY -> "Dom"

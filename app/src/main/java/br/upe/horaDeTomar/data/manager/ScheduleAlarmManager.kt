@@ -4,9 +4,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import br.upe.horaDeTomar.data.entities.Alarm
 import br.upe.horaDeTomar.data.receiver.AlarmBroadCastReceiver
 import br.upe.horaDeTomar.data.receiver.DAYS_SELECTED
@@ -29,9 +31,13 @@ class ScheduleAlarmManager @Inject constructor(
 ) {
     private val handler = Handler(Looper.getMainLooper())
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun schedule(alarm: Alarm) {
         val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
         val alarmIntent = Intent(applicationContext, AlarmBroadCastReceiver::class.java).apply {
+            action = "br.upe.horaDeTomar.ACTION_ALARM_TRIGGERED"
+            putExtra("ALARM_ID", alarm.id)
             putExtra(IS_RECURRING, true)
             putExtra(MINUTE, alarm.minute)
             putExtra(HOUR, alarm.hour)
@@ -42,7 +48,7 @@ class ScheduleAlarmManager @Inject constructor(
             applicationContext,
             alarm.id,
             alarmIntent,
-            pendingIntentFlagg
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val calendar = Calendar.getInstance().apply {
@@ -55,20 +61,20 @@ class ScheduleAlarmManager @Inject constructor(
             }
         }
 
-        val toastText = "Alarme agendado para ${alarm.hour}:${alarm.minute}"
-
-        handler.post {
-            Toast.makeText(applicationContext, toastText, Toast.LENGTH_SHORT).show()
-        }
-
-        workRequestManager.enqueueWorker<AlarmCheckerWorker>(ALARM_CHECKER_TAG)
-
-        alarmManager.setRepeating(
+        alarmManager.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            alarmPendingIntent,
+            alarmPendingIntent
         )
+
+        Toast.makeText(
+            applicationContext,
+            "Alarme agendado para ${alarm.hour}:${alarm.minute}",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        // worker opcional
+        workRequestManager.enqueueWorker<AlarmCheckerWorker>(ALARM_CHECKER_TAG)
     }
 
     fun cancel(alarm: Alarm) {
@@ -91,6 +97,7 @@ class ScheduleAlarmManager @Inject constructor(
         alarmManager.cancel(alarmPendingIntent)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun snooze(medicationId: Int) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()

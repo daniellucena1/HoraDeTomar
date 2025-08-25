@@ -1,5 +1,6 @@
 package br.upe.horaDeTomar.util.helper
 
+import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -15,9 +16,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationManager
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.content.ContextCompat
 import br.upe.horaDeTomar.R
@@ -96,6 +99,11 @@ class AlarmNotificationHelper @Inject constructor(
         }
 
         return false
+    }
+
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    fun showAlarmNotification(notification: Notification) {
+        notificationManager.notify(ALARM_WORKER_NOTIFICATION_ID, notification)
     }
 
     private fun createAlarmNotificationChannels() {

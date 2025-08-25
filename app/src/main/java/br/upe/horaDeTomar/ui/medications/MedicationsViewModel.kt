@@ -70,62 +70,39 @@ class MedicationsViewModel @Inject constructor(
 
     override fun updateAlarm(alarm: Alarm) {
         viewModelScope.launch {
-            listOf(
-                async {
-                    alarm.setDaysSelected(alarm.daysSelected)
-                    alarmRepository.update(alarm)
-                },
-                async {
-                    if (alarm.isScheduled) {
-                        scheduleAlarmManager.schedule(alarm)
-                    } else {
-                        scheduleAlarmManager.cancel(alarm)
-                    }
-                },
-            )
+            alarm.setDaysSelected(alarm.daysSelected)
+            alarmRepository.update(alarm)
+
+            if (alarm.isScheduled) {
+                scheduleAlarmManager.schedule(alarm)
+            } else {
+                scheduleAlarmManager.cancel(alarm)
+            }
         }
     }
 
     override fun removeAlarm(alarm: Alarm) {
         viewModelScope.launch {
-            listOf(
-                async { alarmRepository.delete(alarm) },
-                async {
-                    if (alarm.isScheduled) {
-                        scheduleAlarmManager.cancel(alarm)
-                    }
-                },
-            )
+            alarmRepository.delete(alarm)
+
+            if ( alarm.isScheduled ) {
+                scheduleAlarmManager.cancel(alarm)
+            }
         }
     }
 
     override fun saveAlarm() {
         viewModelScope.launch {
-            val lastId = alarmRepository.getLastId()
-            val nextILong = (lastId?:0L) + 1L
             val alarm = alarmRepository.getAlarmById(alarmCreationState.id)
 
-            if (!alarmCreationState.isScheduled) {
-                alarmCreationState.isScheduled = true
+            if (alarm != null) {
+                alarmRepository.update(alarmCreationState.copy(isScheduled = true))
+            } else {
+                val newId = alarmRepository.insert(alarmCreationState.copy(isScheduled = true))
+                alarmCreationState = alarmCreationState.copy(id = newId.toInt())
             }
 
-            if (nextILong > Int.MAX_VALUE) {
-                Log.e("MedicationsViewModel", "ID overflow, cannot create new alarm")
-                throw IllegalStateException("ID overflow, cannot create new alarm")
-            }
-
-            listOf(
-                async {
-                    if (alarm?.id == alarmCreationState.id) {
-                        updateAlarm(alarmCreationState)
-                    } else {
-                        alarmCreationState.id = nextILong.toInt()
-                        alarmCreationState.setDaysSelected(alarmCreationState.daysSelected)
-                        alarmRepository.insert(alarmCreationState)
-                    }
-                },
-                async { scheduleAlarmManager.schedule(alarmCreationState) },
-            )
+            scheduleAlarmManager.schedule(alarmCreationState)
         }
     }
 
