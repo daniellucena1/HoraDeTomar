@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <!-- Adicionados para alarmes -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
@@ -44,6 +45,18 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.reminders.AlarmActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.MyApp.FullScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -51,17 +64,7 @@
             tools:node="remove">
         </provider>
 
-        <!-- Receiver de alarmes -->
-        <receiver
-            android:name=".data.receiver.AlarmBroadCastReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="br.upe.horaDeTomar.ACTION_TRIGGERED"/>
-                <action android:name="br.upe.horaDeTomar.ACTION_DISMISS"/>
-                <action android:name="br.upe.horaDeTomar.ACTION_SNOOZE"/>
-            </intent-filter>
-        </receiver>
+        <receiver android:name=".data.manager.AlarmReceiver" android:exported="true" android:enabled="true" />
 
     </application>
 

@@ -1,5 +1,6 @@
 package br.upe.horaDeTomar.di
 
+import android.app.AlarmManager
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -72,5 +73,11 @@ object AppModule {
     @Provides
     fun provideAlarmRepository(dao: br.upe.horaDeTomar.data.daos.AlarmDao): br.upe.horaDeTomar.data.repositories.AlarmRepository {
         return br.upe.horaDeTomar.data.repositories.AlarmRepository(dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlarmManager(@ApplicationContext context: Context): AlarmManager {
+        return context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 }

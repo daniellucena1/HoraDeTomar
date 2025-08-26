@@ -1,6 +1,8 @@
 package br.upe.horaDeTomar.ui.medications
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,7 +11,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import br.upe.horaDeTomar.data.entities.Alarm
 import br.upe.horaDeTomar.data.entities.Medication
-import br.upe.horaDeTomar.data.manager.ScheduleAlarmManager
+import br.upe.horaDeTomar.data.manager.AlarmScheduler
 import br.upe.horaDeTomar.data.repositories.AlarmRepository
 import br.upe.horaDeTomar.data.repositories.MedicationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,11 +22,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.S)
 @HiltViewModel
 class MedicationsViewModel @Inject constructor(
     private val repository: MedicationRepository,
     private val alarmRepository: AlarmRepository,
-    private val scheduleAlarmManager: ScheduleAlarmManager
+    private val alarmScheduler: AlarmScheduler
 ): ViewModel(), AlarmActions{
     val medications: StateFlow<List<Medication>> = repository.medications
         .stateIn(
@@ -68,15 +71,16 @@ class MedicationsViewModel @Inject constructor(
         alarmCreationState = alarm
     }
 
+
     override fun updateAlarm(alarm: Alarm) {
         viewModelScope.launch {
             alarm.setDaysSelected(alarm.daysSelected)
             alarmRepository.update(alarm)
 
             if (alarm.isScheduled) {
-                scheduleAlarmManager.schedule(alarm)
+                alarmScheduler.schedule(alarm)
             } else {
-                scheduleAlarmManager.cancel(alarm)
+                alarmScheduler.cancelAlarm(alarm)
             }
         }
     }
@@ -86,7 +90,7 @@ class MedicationsViewModel @Inject constructor(
             alarmRepository.delete(alarm)
 
             if ( alarm.isScheduled ) {
-                scheduleAlarmManager.cancel(alarm)
+                alarmScheduler.cancelAlarm(alarm)
             }
         }
     }
@@ -102,18 +106,18 @@ class MedicationsViewModel @Inject constructor(
                 alarmCreationState = alarmCreationState.copy(id = newId.toInt())
             }
 
-            scheduleAlarmManager.schedule(alarmCreationState)
+            alarmScheduler.schedule(alarmCreationState)
         }
     }
 
-    override fun clearAlarm() {
-        viewModelScope.launch {
-            alarmListState.value?.let {
-                listOf(
-                    async { alarmRepository.clear() },
-                    async { scheduleAlarmManager.clearScheduledAlarms(it) },
-                )
-            }
-        }
-    }
+//    override fun clearAlarm() {
+//        viewModelScope.launch {
+//            alarmListState.value?.let {
+//                listOf(
+//                    async { alarmRepository.clear() },
+//                    async { scheduleAlarmManager.clearScheduledAlarms(it) },
+//                )
+//            }
+//        }
+//    }
 }
