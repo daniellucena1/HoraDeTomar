@@ -70,15 +70,15 @@ class AlarmScheduler @Inject constructor(
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
 
-                while (!alarmManager.canScheduleExactAlarms()) {
-                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-                        data = Uri.parse("package:${context.packageName}")
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-                    context.startActivity(intent)
-                }
+//                if (!alarmManager.canScheduleExactAlarms()) {
+//                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+//                        data = Uri.parse("package:${context.packageName}")
+//                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                    }
+//                    context.startActivity(intent)
+//                }
 
-                alarmManager.setExactAndAllowWhileIdle(
+                alarmManager.setAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     calendar.timeInMillis,
                     pendingIntent
