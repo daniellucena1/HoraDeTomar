@@ -42,7 +42,7 @@ jobs:
           cache: gradle
 
       - name: Decode keystore
-        run: echo "${{ secrets.SIGNING_KEYSTORE }}" | base64 --decode > my-release-key.jks
+        run: echo "${{ secrets.SIGNING_KEYSTORE }}" | base64 --decode > app/my-release-key.jks
       
       - name: Build release APK
         run: ./gradlew -Pandroid.injected.signing.store.file=my-release-key.jks -Pandroid.injected.signing.store.password=${{ secrets.SIGNING_KEYSTORE_PASSWORD }} -Pandroid.injected.signing.key.alias=${{ secrets.SIGNING_KEY_ALIAS }} -Pandroid.injected.signing.key.password=${{ secrets.SIGNING_KEY_PASSWORD }} assembleRelease
