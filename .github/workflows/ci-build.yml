@@ -52,7 +52,7 @@ jobs:
       - name: Create local.properties for signing
         run: |
           cat > local.properties << EOF
-          STORE_FILE=app/my-release-key.jks
+          STORE_FILE=my-release-key.jks
           STORE_PASSWORD=${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
           KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}
           KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}
