@@ -1,13 +1,14 @@
 package br.upe.horaDeTomar.data.repositories
 
 import br.upe.horaDeTomar.data.entities.Alarm
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 
 class AlarmRepository @Inject constructor(
     private val alarmDao: br.upe.horaDeTomar.data.daos.AlarmDao
 ){
-    val alarmList = alarmDao.getAlarmsList().distinctUntilChanged()
+    val alarmList: Flow<List<Alarm>> = alarmDao.getAlarmsList()
 
     suspend fun insert(alarm: Alarm) : Long = alarmDao.insert(alarm)
 

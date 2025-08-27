@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,12 +27,17 @@ import androidx.compose.ui.unit.sp
 import dagger.hilt.android.AndroidEntryPoint
 import br.upe.horaDeTomar.R
 import br.upe.horaDeTomar.data.manager.AlarmScheduler
+import br.upe.horaDeTomar.data.repositories.AlarmRepository
+import br.upe.horaDeTomar.ui.themes.black
+import br.upe.horaDeTomar.ui.themes.button_green_primary
+import br.upe.horaDeTomar.ui.themes.green_primary
+import br.upe.horaDeTomar.ui.themes.white
+import br.upe.horaDeTomar.ui.themes.white_background
 
 @AndroidEntryPoint
 class AlarmActivity: ComponentActivity() {
     private lateinit var mediaPlayer: MediaPlayer
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -80,16 +86,22 @@ fun AlarmScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(white_background),
         contentAlignment = Alignment.Center
     ) {
         Column( horizontalAlignment = Alignment.CenterHorizontally ) {
-            Text("Hora do Remédio!", color = Color.White, fontSize = 32.sp)
+            Text("Hora do Remédio!", color = black, fontSize = 32.sp)
             Spacer(Modifier.height(32.dp))
             Row {
-                Button(onClick = onDismiss) { Text("Cancelar") }
+                Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(
+                    containerColor = green_primary,
+                    contentColor = white
+                )) { Text("Cancelar") }
                 Spacer(Modifier.width(16.dp))
-                Button(onClick = onSnooze) { Text("Soneca") }
+                Button(onClick = onSnooze, colors = ButtonDefaults.buttonColors(
+                    contentColor = white,
+                    containerColor = green_primary
+                )) { Text("Soneca") }
             }
         }
     }

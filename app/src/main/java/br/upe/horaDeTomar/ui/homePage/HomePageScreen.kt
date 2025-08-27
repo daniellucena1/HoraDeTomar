@@ -36,6 +36,7 @@ fun HomePageScreen(
     // States de usuários e medicamentos
     val usersState by userViewModel.users.collectAsState()
     val medicationsState by medicationViewModel.medications.collectAsState()
+    val alarmListState by medicationViewModel.alarmListState.collectAsState()
 
     // State para scroll
     val state = rememberScrollState()
@@ -89,10 +90,18 @@ fun HomePageScreen(
         ){
             medicationsState.forEach {
                 medication ->
+                var hour = ""
+                var minute = ""
+                alarmListState.forEach { alarm ->
+                    if (alarm.medicationId == medication.id) {
+                        hour = alarm.hour
+                        minute = alarm.minute
+                    }
+                }
                 MedicineHomePageCard(
                     medicineName = medication.name,
                     dose = "${medication.dose} comprimido(s)",
-                    time = "00:00",
+                    time = "${hour}:${minute}",
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))

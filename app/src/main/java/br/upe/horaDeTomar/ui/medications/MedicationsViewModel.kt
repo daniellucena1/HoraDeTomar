@@ -36,6 +36,13 @@ class MedicationsViewModel @Inject constructor(
             emptyList()
         )
 
+    val alarmListState: StateFlow<List<Alarm>> = alarmRepository.alarmList
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
+
     var medicationCreationState by mutableStateOf(
         Medication(
             name = "",
@@ -60,7 +67,7 @@ class MedicationsViewModel @Inject constructor(
         saveAlarm()
     }
 
-    val alarmListState = alarmRepository.alarmList.asLiveData()
+
 
     var alarmCreationState by mutableStateOf(Alarm(medicationId = medicationCreationState.id))
         private set

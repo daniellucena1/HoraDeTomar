@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import br.upe.horaDeTomar.data.entities.Alarm
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.OptionsCard
 import br.upe.horaDeTomar.ui.components.ReminderCard
@@ -37,6 +38,7 @@ fun RemindersScreen(
 ) {
     // state da collection de medicamentos
     val medications by viewModel.medications.collectAsState()
+    val alarmListState by viewModel.alarmListState.collectAsState()
 
     val state = rememberScrollState()
     LaunchedEffect(Unit) { state.animateScrollTo(100) }
@@ -65,11 +67,22 @@ fun RemindersScreen(
             ){
                 medications.forEach {
                     medication ->
+                    var hour = ""
+                    var minute = ""
+                    var alarmN: Alarm
+                    alarmListState.forEach {
+                        alarm ->
+                        if ( alarm.medicationId == medication.id ) {
+                            hour = alarm.hour
+                            minute = alarm.minute
+                            alarmN = alarm
+                        }
+                    }
                     ReminderCard(
                         name = medication.name,
                         dose = medication.dose,
                         via = medication.via,
-                        time = "00:00",
+                        time = "${hour}:${minute}",
                         selectedDays = "Seg, Ter, Qua",
                         modifier = Modifier.padding(bottom = 10.dp)
                     )

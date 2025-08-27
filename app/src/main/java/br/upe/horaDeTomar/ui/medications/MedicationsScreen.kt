@@ -29,6 +29,7 @@ import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
 import br.upe.horaDeTomar.ui.components.OptionsCard
 import br.upe.horaDeTomar.ui.components.UserCard
 import br.upe.horaDeTomar.ui.themes.black
+import kotlin.math.min
 
 @Composable
 fun MedicationsScreen(
@@ -38,6 +39,7 @@ fun MedicationsScreen(
 ) {
     // States e ViewModel
     val medications by viewModel.medications.collectAsState()
+    val alarmStateList by viewModel.alarmListState.collectAsState()
 
     // State de scroll
     val state = rememberScrollState()
@@ -67,10 +69,19 @@ fun MedicationsScreen(
             ) {
                 medications.forEach {
                     medication ->
+                    var hour = ""
+                    var minute = ""
+                    alarmStateList.forEach {
+                        alarm ->
+                        if (alarm.medicationId == medication.id) {
+                            hour = alarm.hour
+                            minute = alarm.minute
+                        }
+                    }
                     MedicineHomePageCard(
                         medicineName = medication.name,
                         dose = medication.dose,
-                        time = "00:00"
+                        time = "${hour}:${minute}"
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                 }
