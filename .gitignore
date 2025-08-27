@@ -14,4 +14,4 @@
 .cxx
 local.properties
 .idea/discord.xml
-my_release_key.jks
+app/my_release_key.jks
