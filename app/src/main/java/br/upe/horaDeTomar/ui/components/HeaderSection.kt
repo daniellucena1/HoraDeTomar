@@ -39,7 +39,8 @@ import br.upe.horaDeTomar.ui.themes.white
 @Composable
 fun HeaderSection(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    userName: String
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route.orEmpty();
@@ -104,7 +105,7 @@ fun HeaderSection(
         }
         if (currentTopLevel == TopLevelsDestinations.Home) {
             Text(
-                text = "Olá, Daniel Torres!",
+                text = "Olá, $userName",
                 color = white,
                 modifier = Modifier
                     .padding(start = 16.dp, bottom = 16.dp)

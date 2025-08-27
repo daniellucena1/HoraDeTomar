@@ -12,14 +12,15 @@ import java.time.Period
         parentColumns = ["id"],
         childColumns = ["userId"],
         onDelete = ForeignKey.CASCADE
-    )], indices = [Index("userId")]
+    )],
+    indices = [
+        Index("userId"),
+    ]
 )
 data class Medication(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val dose: String,
     val via: String,
-    val time: String,
-    val period: String,
     val userId: Int
 )

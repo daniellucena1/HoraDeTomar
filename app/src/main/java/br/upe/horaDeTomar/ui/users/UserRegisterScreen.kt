@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import br.upe.horaDeTomar.navigation.TopLevelsDestinations
+import br.upe.horaDeTomar.ui.AccountViewModel
 import br.upe.horaDeTomar.ui.components.DatePickerModal
 import br.upe.horaDeTomar.ui.components.FieldTextOutlined
 import br.upe.horaDeTomar.ui.components.RegisterButton
@@ -58,10 +59,11 @@ import java.util.TimeZone
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun UserRegisterScreen(
-    onBackClick: () -> Unit,
-    onRegisterClick: () -> Unit,
-    viewModel: UsersViewModel = hiltViewModel(),
-    navController: NavController
+    onUserRegistered: () -> Unit,
+    userViewModel: UsersViewModel = hiltViewModel(),
+    accountViewModel: AccountViewModel = hiltViewModel(),
+    navController: NavController,
+    isFirstTime: Boolean
 ) {
     var userName by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
@@ -109,7 +111,7 @@ fun UserRegisterScreen(
                 isErrorOnUserName = it.isBlank()
            },
             config = OutlinedInputConfig(
-                label = "Nome do Medicamento",
+                label = "Nome do Usuário",
                 capitalization = KeyboardCapitalization.Words,
                 keyboardType = KeyboardType.Text
             ),
@@ -208,8 +210,13 @@ fun UserRegisterScreen(
             onClick = {
                 if (userName.isNotBlank() && address.isNotBlank() && selectedDate != null) {
                     coroutineScope.launch {
-                        viewModel.createUser(userName, address, selectedDate.toString())
-                        navController.popBackStack()
+                        if (isFirstTime) {
+                            accountViewModel.createAccount(userName)
+                            userViewModel.createUser(userName, address, selectedDate.toString())
+                        } else {
+                            userViewModel.createUser(userName, address, selectedDate.toString())
+                        }
+                        onUserRegistered()
                     }
                 } else {
                     isErrorOnUserName = userName.isBlank()

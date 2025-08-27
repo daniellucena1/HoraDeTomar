@@ -40,6 +40,7 @@ fun ReminderCard(
     dose: String,
     via: String,
     time: String,
+    selectedDays: String,
 ) {
     Box(
         modifier = modifier
@@ -111,6 +112,14 @@ fun ReminderCard(
                 )
                 Text(
                     text = "Via: $via",
+                    fontWeight = FontWeight.Normal,
+                    maxLines = 1,
+                    fontSize = 14.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    color = green_primary
+                )
+                Text(
+                    text = "Dias: $selectedDays",
                     fontWeight = FontWeight.Normal,
                     maxLines = 1,
                     fontSize = 14.sp,

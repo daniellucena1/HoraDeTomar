@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "br.upe.horaDeTomar"
-        minSdk = 21
+        minSdk = 31
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -57,11 +57,15 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.room.runtime.android)
+    implementation("androidx.work:work-runtime-ktx:2.10.3")
 
+    implementation("com.google.code.gson:gson:2.10.1")
     // Hilt core
     implementation("com.google.dagger:hilt-android:2.56.2")
     ksp("com.google.dagger:hilt-compiler:2.56.2")
     ksp("androidx.room:room-compiler:2.7.2")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     // Para Jetpack Compose
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="alarm_picker_padding_start_large">70dp</dimen>
+    <dimen name="alarm_picker_padding_start_small">50dp</dimen>
+</resources>
