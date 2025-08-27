@@ -65,7 +65,7 @@ jobs:
       - name: Rename APK with version
         run: |
           VERSION_NAME=${GITHUB_REF#refs/tags/}
-          mv app/build/outputs/apk/release/app-release-unsigned.apk app-${VERSION_NAME}.apk
+          mv app/build/outputs/apk/release/app-release.apk app-${VERSION_NAME}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
