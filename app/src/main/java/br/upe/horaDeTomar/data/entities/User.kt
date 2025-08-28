@@ -18,5 +18,6 @@ data class User(
     val name: String,
     val birthDate: String,
     val address: String,
-    val accountId: Int
+    val accountId: Int,
+    val imageUri: String
 )

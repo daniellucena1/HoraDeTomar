@@ -1,5 +1,6 @@
 package br.upe.horaDeTomar.data.entities
 
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -22,5 +23,6 @@ data class Medication(
     val name: String,
     val dose: String,
     val via: String,
-    val userId: Int
+    val userId: Int,
+    val imageUri: String
 )

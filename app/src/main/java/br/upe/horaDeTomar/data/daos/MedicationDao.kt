@@ -1,5 +1,6 @@
 package br.upe.horaDeTomar.data.daos
 
+import android.net.Uri
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -30,4 +31,7 @@ interface MedicationDao {
 
     @Query("SELECT * FROM medications")
     fun getMedications(): Flow<List<Medication>>
+
+    @Query("SELECT imageUri FROM medications WHERE id = :medicationId LIMIT 1")
+    fun getMedicationImage(medicationId: Int): String
 }

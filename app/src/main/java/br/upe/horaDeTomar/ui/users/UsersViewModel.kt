@@ -21,12 +21,13 @@ class UsersViewModel @Inject constructor(private val repository: UserRepository)
             emptyList()
         )
 
-    suspend fun createUser(userName: String, address: String, birthDate: String) {
+    suspend fun createUser(userName: String, address: String, birthDate: String, imageUri: String) {
         val user = User(
             name = userName,
             address = address,
             birthDate = birthDate,
-            accountId = 1 // Assumindo uma account ID fixa para simplificação
+            accountId = 1,
+            imageUri = imageUri// Assumindo uma account ID fixa para simplificação
         )
         repository.insert(user)
     }

@@ -1,6 +1,12 @@
 package br.upe.horaDeTomar.ui.users
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import br.upe.horaDeTomar.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -15,7 +21,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Icon
@@ -24,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +43,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,11 +62,14 @@ import br.upe.horaDeTomar.ui.components.TakePhotoButton
 import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_secondary
+import br.upe.horaDeTomar.util.createTempPictureUri
+import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import kotlin.contracts.contract
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -78,10 +93,51 @@ fun UserRegisterScreen(
     var isErrorOnAddress by remember { mutableStateOf(false) }
     var isErrorOnDate by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
+    var selectedPhotoUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    var tempPhotoUri by remember {
+        mutableStateOf(Uri.EMPTY)
+    }
+
+    val singlePhotoSelectContract = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> selectedPhotoUri = uri}
+    )
+
+    val singlePhotoTakeContract = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success) selectedPhotoUri = tempPhotoUri
+        }
+    )
+
+    val cameraPermissionState = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                tempPhotoUri = context.createTempPictureUri()
+                singlePhotoTakeContract.launch(tempPhotoUri)
+            } else {
+                Toast.makeText(context, "Permissão da câmera negada", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+    val state = rememberScrollState()
+    LaunchedEffect(Unit) {
+        state.animateScrollTo(100)
+    }
+
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(state),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -192,17 +248,33 @@ fun UserRegisterScreen(
         ) {
             SelectPhotoButton(
                 onClick = {
-
+                    singlePhotoSelectContract.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
                 },
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 4.dp)
             )
             TakePhotoButton(
-                onClick = {},
+                onClick = {
+                    focusManager.clearFocus()
+                    cameraPermissionState.launch(
+                        Manifest.permission.CAMERA
+                    )
+                },
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 4.dp)
+            )
+        }
+
+        if (selectedPhotoUri != null) {
+            AsyncImage(
+                model = selectedPhotoUri,
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.Crop
             )
         }
 
@@ -212,9 +284,9 @@ fun UserRegisterScreen(
                     coroutineScope.launch {
                         if (isFirstTime) {
                             accountViewModel.createAccount(userName)
-                            userViewModel.createUser(userName, address, selectedDate.toString())
+                            userViewModel.createUser(userName, address, selectedDate.toString(), selectedPhotoUri.toString())
                         } else {
-                            userViewModel.createUser(userName, address, selectedDate.toString())
+                            userViewModel.createUser(userName, address, selectedDate.toString(), selectedPhotoUri.toString())
                         }
                         onUserRegistered()
                     }

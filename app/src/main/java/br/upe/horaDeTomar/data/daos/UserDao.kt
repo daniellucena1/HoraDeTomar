@@ -18,6 +18,9 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
     suspend fun getUserById(userId: Int): User?
 
+    @Query("SELECT imageUri FROM users WHERE id = :userId LIMIT 1")
+    suspend fun getImageById(userId: Int): String
+
     @Query("SELECT * FROM users")
     fun getUsers(): Flow<List<User>>
 

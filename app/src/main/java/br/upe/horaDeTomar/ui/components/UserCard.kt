@@ -15,46 +15,67 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import br.upe.horaDeTomar.R
 import br.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_primary
 import br.upe.horaDeTomar.ui.themes.green_secondary
+import coil.compose.AsyncImage
 
 @Composable
 fun UserCard(
     userName: String,
     age: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageUri: String = ""
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        Box(
-            modifier = Modifier
-                .size(50.dp)
-                .shadow(6.dp, shape = RoundedCornerShape(6.dp))
-                .background(
-                    color = green_secondary,
-                    shape = RoundedCornerShape(6.dp)
+        if (imageUri != "") {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .shadow(6.dp, shape = RoundedCornerShape(6.dp))
+                    .padding(2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = imageUri.toUri(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
                 )
-                .padding(2.dp),
-            contentAlignment = Alignment.Center
-        ){
-            Icon(
-                painter = painterResource(id = R.drawable.ic_user),
-                contentDescription = "Ícone de Usuário",
-                modifier = Modifier.fillMaxWidth(),
-                tint = black
-            )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .shadow(6.dp, shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = green_secondary,
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .padding(2.dp),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_user),
+                    contentDescription = "Ícone de Usuário",
+                    modifier = Modifier.fillMaxWidth(),
+                    tint = black
+                )
+            }
         }
 
         Column (
