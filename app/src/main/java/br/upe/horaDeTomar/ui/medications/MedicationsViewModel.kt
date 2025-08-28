@@ -48,7 +48,8 @@ class MedicationsViewModel @Inject constructor(
             name = "",
             via = "",
             dose = "",
-            userId = 1
+            userId = 1,
+            imageUri = ""
         )
     )
     private set

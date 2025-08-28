@@ -66,7 +66,8 @@ fun UsersScreen(
                     UserCard(
                         userName = user.name,
                         age = user.birthDate,
-                        modifier = Modifier.padding(bottom = 10.dp)
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        imageUri = user.imageUri
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))

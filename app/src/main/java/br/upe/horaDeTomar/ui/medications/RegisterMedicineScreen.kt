@@ -1,6 +1,11 @@
 package br.upe.horaDeTomar.ui.medications
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.material3.TimePicker
 import br.upe.horaDeTomar.R
 import androidx.compose.foundation.background
@@ -18,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -44,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,14 +70,9 @@ import br.upe.horaDeTomar.ui.components.TimePickerDialog
 import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_secondary
+import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import java.util.Calendar
-
-@Composable
-@Preview(showBackground = true, device = PIXEL_7, apiLevel = 34)
-fun RegisterMedicineScreenPreview() {
-    RegisterMedicineScreen(navControler = rememberNavController())
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,25 +85,24 @@ fun RegisterMedicineScreen(
     var medicineName by remember { mutableStateOf("") }
     var via by remember { mutableStateOf("") }
     var dose by remember { mutableStateOf("") }
-    var selectedDays by remember { mutableStateOf<List<String>>(emptyList()) }
 
     // Variáveis de estado para o seletor de horário
     val currentTime = Calendar.getInstance()
-    var selectedTime: TimePickerState? by remember { mutableStateOf(null) }
-    var showModal by remember { mutableStateOf(false) }
-    val timePickerState = rememberTimePickerState(
-        initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
-        initialMinute = currentTime.get(Calendar.MINUTE),
-        is24Hour = true,
+
+    // variável de estado para a imagem do remédio
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val singlePhotoSelectContract = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> selectedImageUri = uri}
     )
 
     // variáveis de erro para variáveis de estado para os campos nulas
     var isErrorOnMedicineName by remember { mutableStateOf(false) }
     var isErrorOnVia by remember { mutableStateOf(false) }
     var isErrorOnDose by remember { mutableStateOf(false) }
-    var isErrorOnPeriod by remember { mutableStateOf(false) }
-    var isErrorOnSelectedTime by remember { mutableStateOf(false) }
-    var isErrorOnSelectedDays by remember { mutableStateOf(false) }
 
     // CoroutineScope para lidar com ações assíncronas, se necessário
     val coroutineScope = rememberCoroutineScope()
@@ -216,7 +217,9 @@ fun RegisterMedicineScreen(
         ) {
             SelectPhotoButton(
                 onClick = {
-
+                    singlePhotoSelectContract.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -230,6 +233,15 @@ fun RegisterMedicineScreen(
             )
         }
 
+        if (selectedImageUri != null) {
+            AsyncImage(
+                model = selectedImageUri,
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
+        }
+
         RegisterButton(
             onClick = {
                 if ( medicineName.isNotBlank() &&
@@ -240,7 +252,8 @@ fun RegisterMedicineScreen(
                             name = medicineName,
                             via = via,
                             dose = dose,
-                            userId = 1 // Assumindo uma user ID fixa para simplificação
+                            userId = 1, // Assumindo uma user ID fixa para simplificação
+                            imageUri = selectedImageUri.toString()
                         )
                         viewModel.updateMedicationCreationState(medication)
                         viewModel.createMedication()

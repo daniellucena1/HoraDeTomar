@@ -64,7 +64,8 @@ fun HomePageScreen(
                 UserCard(
                     userName = users.name,
                     age = users.birthDate,
-                    modifier = Modifier.padding(bottom = 10.dp)
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    imageUri = users.imageUri
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -102,6 +103,7 @@ fun HomePageScreen(
                     medicineName = medication.name,
                     dose = "${medication.dose} comprimido(s)",
                     time = "${hour}:${minute}",
+                    imageUri = medication.imageUri
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))

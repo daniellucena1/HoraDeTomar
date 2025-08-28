@@ -81,7 +81,8 @@ fun MedicationsScreen(
                     MedicineHomePageCard(
                         medicineName = medication.name,
                         dose = medication.dose,
-                        time = "${hour}:${minute}"
+                        time = "${hour}:${minute}",
+                        imageUri = medication.imageUri
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                 }

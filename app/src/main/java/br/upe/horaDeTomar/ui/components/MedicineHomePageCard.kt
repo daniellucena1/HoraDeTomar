@@ -1,5 +1,6 @@
 package br.upe.horaDeTomar.ui.components
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,31 +29,51 @@ import br.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_primary
 import br.upe.horaDeTomar.ui.themes.green_secondary
+import coil.compose.AsyncImage
+import androidx.core.net.toUri
 
 @Composable
 fun MedicineHomePageCard(
     medicineName: String,
     dose: String,
-    time: String
+    time: String,
+    imageUri: String
 ) {
     Row {
-        Box(
-            modifier = Modifier
-                .size(50.dp)
-                .shadow(6.dp, shape = RoundedCornerShape(6.dp))
-                .background(
-                    color = green_secondary,
-                    shape = RoundedCornerShape(6.dp)
+        if (imageUri != "") {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .shadow(6.dp, shape = RoundedCornerShape(6.dp))
+                    .padding(2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = imageUri.toUri(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
                 )
-                .padding(2.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_pill),
-                contentDescription = "Ícone de Usuário",
-                modifier = Modifier.fillMaxWidth(),
-                tint = black
-            )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .shadow(6.dp, shape = RoundedCornerShape(6.dp))
+                    .background(
+                        color = green_secondary,
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .padding(2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_pill),
+                    contentDescription = "Ícone de Usuário",
+                    modifier = Modifier.fillMaxWidth(),
+                    tint = black
+                )
+            }
         }
 
         Column (
@@ -92,14 +115,14 @@ fun MedicineHomePageCard(
     }
 }
 
-@Preview
-@Composable
-fun MedicineHomePageCardPreview() {
-    HoraDoRemedioTheme {
-        MedicineHomePageCard(
-            medicineName = "Dipirona",
-            dose = "1 comprimido",
-            time = "12:00"
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun MedicineHomePageCardPreview() {
+//    HoraDoRemedioTheme {
+//        MedicineHomePageCard(
+//            medicineName = "Dipirona",
+//            dose = "1 comprimido",
+//            time = "12:00"
+//        )
+//    }
+//}
