@@ -75,7 +75,7 @@ class AlarmScheduler @Inject constructor(
 //                        data = Uri.parse("package:${context.packageName}")
 //                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
 //                    }
-//                    context.startActivity(intent)
+//                    context.startActivity(intent
 //                }
 
                 alarmManager.setAndAllowWhileIdle(

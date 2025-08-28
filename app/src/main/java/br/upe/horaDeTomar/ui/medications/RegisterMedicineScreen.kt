@@ -51,6 +51,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -70,9 +72,11 @@ import br.upe.horaDeTomar.ui.components.TimePickerDialog
 import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_secondary
+import br.upe.horaDeTomar.util.createTempPictureUri
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.jar.Manifest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,13 +94,39 @@ fun RegisterMedicineScreen(
     val currentTime = Calendar.getInstance()
 
     // variável de estado para a imagem do remédio
+    val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
     var selectedImageUri by remember {
         mutableStateOf<Uri?>(null)
+    }
+
+    var tempPhotoUri by remember {
+        mutableStateOf(Uri.EMPTY)
     }
 
     val singlePhotoSelectContract = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImageUri = uri}
+    )
+
+    val singlePhotoTakeContract = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success) selectedImageUri = tempPhotoUri
+        }
+    )
+
+    val cameraPermissionState = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+               tempPhotoUri = context.createTempPictureUri()
+               singlePhotoTakeContract.launch(tempPhotoUri)
+            } else {
+                Toast.makeText(context, "Permissão da câmera negada", Toast.LENGTH_SHORT).show()
+            }
+        }
     )
 
     // variáveis de erro para variáveis de estado para os campos nulas
@@ -226,7 +256,12 @@ fun RegisterMedicineScreen(
                     .padding(end = 4.dp)
             )
             TakePhotoButton(
-                onClick = {},
+                onClick = {
+                    focusManager.clearFocus()
+                    cameraPermissionState.launch(
+                        android.Manifest.permission.CAMERA
+                    )
+                },
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 4.dp)
