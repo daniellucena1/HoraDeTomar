@@ -27,5 +27,9 @@ class MedicationRepository(private val dao: MedicationDao) {
         return dao.getMedicationById(id)
     }
 
+    suspend fun getAllMediactions(): List<Medication>? {
+        return dao.getAllMedications()
+    }
+
     val medications: Flow<List<Medication>> = dao.getMedications();
 }

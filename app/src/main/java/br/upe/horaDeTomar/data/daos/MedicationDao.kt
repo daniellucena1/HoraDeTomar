@@ -26,6 +26,9 @@ interface MedicationDao {
     @Query("SELECT * FROM medications WHERE userId = :userId")
     suspend fun getMedicationsByUser(userId: Int): List<Medication>?
 
+    @Query("SELECT * FROM medications")
+    suspend fun getAllMedications(): List<Medication>?
+
     @Query("SELECT * FROM medications WHERE id = :medicationId LIMIT 1")
     suspend fun getMedicationById(medicationId: Int): Medication?
 

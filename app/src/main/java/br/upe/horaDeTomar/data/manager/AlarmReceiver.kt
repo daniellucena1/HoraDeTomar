@@ -9,7 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AlarmReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
-        val alarmId = intent?.getIntExtra("alarmId", -1) ?: return
+        val alarmId = intent?.getIntExtra("ALARM_ID", -1) ?: return
 
         val alarmIntent = Intent(context, AlarmActivity::class.java).apply {
             putExtra("alarmId", alarmId)
