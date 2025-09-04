@@ -3,6 +3,7 @@ package br.upe.horaDeTomar.ui.medications
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,11 +19,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@RequiresApi(Build.VERSION_CODES.S)
 @HiltViewModel
 class MedicationsViewModel @Inject constructor(
     private val repository: MedicationRepository,
@@ -128,4 +129,16 @@ class MedicationsViewModel @Inject constructor(
 //            }
 //        }
 //    }
+suspend fun getMedicationByAlarmId(alarmId: Int): Medication? {
+    val alarm = alarmRepository.getAlarmById(alarmId)
+
+    val medications = repository.getAllMediactions()
+
+    medications?.forEach { medication ->
+        if (medication.id == alarm?.medicationId) {
+            return medication
+        }
+    }
+    return null;
+}
 }

@@ -23,7 +23,6 @@ class AlarmScheduler @Inject constructor(
 
     private val gson = Gson()
 
-    @RequiresApi(Build.VERSION_CODES.S)
     fun schedule (alarm: Alarm) {
         val hour = alarm.hour.toIntOrNull() ?: 0
         val minute = alarm.minute.toIntOrNull() ?: 0
@@ -70,14 +69,6 @@ class AlarmScheduler @Inject constructor(
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
 
-//                if (!alarmManager.canScheduleExactAlarms()) {
-//                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-//                        data = Uri.parse("package:${context.packageName}")
-//                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                    }
-//                    context.startActivity(intent
-//                }
-
                 alarmManager.setAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     calendar.timeInMillis,
@@ -86,6 +77,34 @@ class AlarmScheduler @Inject constructor(
             }
         }
     }
+
+    fun snooze(alarmId: Int, medicationId: Int, hour: Int, minute: Int) {
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("ALARM_ID", alarmId)
+            putExtra("MEDICATION_ID", medicationId)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            alarmId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.setAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
+    }
+
 
     fun cancelAlarm(alarm: Alarm) {
         val daysSelected = alarm.daysSelected
