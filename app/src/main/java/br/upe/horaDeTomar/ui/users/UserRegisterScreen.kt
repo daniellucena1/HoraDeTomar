@@ -63,6 +63,7 @@ import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_secondary
 import br.upe.horaDeTomar.util.createTempPictureUri
+import br.upe.horaDeTomar.util.persistImage
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -282,11 +283,12 @@ fun UserRegisterScreen(
             onClick = {
                 if (userName.isNotBlank() && address.isNotBlank() && selectedDate != null) {
                     coroutineScope.launch {
+                        val persistedPath = context.persistImage(selectedPhotoUri!!)
                         if (isFirstTime) {
                             accountViewModel.createAccount(userName)
-                            userViewModel.createUser(userName, address, selectedDate.toString(), selectedPhotoUri.toString())
+                            userViewModel.createUser(userName, address, selectedDate.toString(), persistedPath)
                         } else {
-                            userViewModel.createUser(userName, address, selectedDate.toString(), selectedPhotoUri.toString())
+                            userViewModel.createUser(userName, address, selectedDate.toString(), persistedPath)
                         }
                         onUserRegistered()
                     }

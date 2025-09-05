@@ -38,7 +38,7 @@ fun MedicineHomePageCard(
     medicineName: String,
     dose: String,
     time: String,
-    imageUri: String
+    imageUri: String = ""
 ) {
     Row {
         if (imageUri != "") {

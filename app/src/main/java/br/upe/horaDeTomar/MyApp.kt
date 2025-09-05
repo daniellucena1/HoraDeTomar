@@ -16,5 +16,6 @@ class MyApp : Application(), Configuration.Provider {
             .setWorkerFactory(workerFactory)
             .setMinimumLoggingLevel(android.util.Log.DEBUG)
             .build()
-
 }
+
+val CHANNEL_ID = "Alarme de Medicamento 222"

@@ -19,3 +19,13 @@ fun Context.createTempPictureUri(
 
     return FileProvider.getUriForFile(applicationContext, provider, tempFile)
 }
+
+fun Context.persistImage(uri: Uri): String {
+    val inputStream = contentResolver.openInputStream(uri) ?: return ""
+    val file = File(filesDir, "image${System.currentTimeMillis()}.jpg")
+    file.outputStream().use {
+            outputStream ->
+        inputStream.copyTo(outputStream)
+    }
+    return file.absolutePath
+}
