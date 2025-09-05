@@ -1,7 +1,11 @@
 package br.upe.horaDeTomar.ui.reminders
 
+import android.Manifest
 import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.icu.util.Calendar
 import android.media.MediaPlayer
 import android.os.Build
@@ -45,8 +49,13 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import br.upe.horaDeTomar.CHANNEL_ID
 import dagger.hilt.android.AndroidEntryPoint
 import br.upe.horaDeTomar.R
 import br.upe.horaDeTomar.data.entities.Medication
