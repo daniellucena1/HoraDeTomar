@@ -73,6 +73,7 @@ import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
 import br.upe.horaDeTomar.ui.themes.black
 import br.upe.horaDeTomar.ui.themes.green_secondary
 import br.upe.horaDeTomar.util.createTempPictureUri
+import br.upe.horaDeTomar.util.persistImage
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -283,12 +284,13 @@ fun RegisterMedicineScreen(
                      via.isNotBlank() &&
                      dose.isNotBlank())  {
                     coroutineScope.launch {
+                        val persistedPath = context.persistImage(selectedImageUri!!)
                         val medication = Medication(
                             name = medicineName,
                             via = via,
                             dose = dose,
                             userId = 1, // Assumindo uma user ID fixa para simplificação
-                            imageUri = selectedImageUri.toString()
+                            imageUri = persistedPath
                         )
                         viewModel.updateMedicationCreationState(medication)
                         viewModel.createMedication()
