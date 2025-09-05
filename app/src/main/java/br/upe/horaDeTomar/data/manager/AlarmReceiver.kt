@@ -30,7 +30,7 @@ class AlarmReceiver: BroadcastReceiver() {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.alarm_clock)
             .setContentTitle("Hora de Tomar")
-            .setContentText("Hello World!")
+            .setContentText("Está na hora do seu remédio - Clique para saber mais")
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setVisibility(VISIBILITY_PUBLIC)
             .setFullScreenIntent(pendingIntent, true)
