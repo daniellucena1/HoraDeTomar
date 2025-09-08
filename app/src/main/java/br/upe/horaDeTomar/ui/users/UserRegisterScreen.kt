@@ -281,7 +281,7 @@ fun UserRegisterScreen(
 
         RegisterButton(
             onClick = {
-                if (userName.isNotBlank() && address.isNotBlank() && selectedDate != null) {
+                if (userName.isNotBlank() && address.isNotBlank() && selectedDate != null && selectedPhotoUri != null) {
                     coroutineScope.launch {
                         val persistedPath = context.persistImage(selectedPhotoUri!!)
                         if (isFirstTime) {
@@ -296,6 +296,9 @@ fun UserRegisterScreen(
                     isErrorOnUserName = userName.isBlank()
                     isErrorOnAddress = address.isBlank()
                     isErrorOnDate = selectedDate.isNullOrBlank()
+                    if ( selectedPhotoUri == null ) {
+                        Toast.makeText(context, "Selecione uma imagem", Toast.LENGTH_LONG).show()
+                    }
                 }
             },
             label = "Cadastrar-se",
