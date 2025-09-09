@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -64,6 +65,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.upe.horaDeTomar.data.entities.Medication
 import br.upe.horaDeTomar.navigation.TopLevelsDestinations
+import br.upe.horaDeTomar.ui.components.DropDownMenu
 import br.upe.horaDeTomar.ui.components.FieldTextOutlined
 import br.upe.horaDeTomar.ui.components.RegisterButton
 import br.upe.horaDeTomar.ui.components.SelectPhotoButton
@@ -90,6 +92,7 @@ fun RegisterMedicineScreen(
     var medicineName by remember { mutableStateOf("") }
     var via by remember { mutableStateOf("") }
     var dose by remember { mutableStateOf("") }
+    val viaList = listOf<String>("Oral", "Tópico", "Sublingual")
 
     // Variáveis de estado para o seletor de horário
     val currentTime = Calendar.getInstance()
@@ -185,50 +188,53 @@ fun RegisterMedicineScreen(
             isError = isErrorOnMedicineName
         )
 
-        Row (modifier = Modifier.fillMaxWidth()) {
-            FieldTextOutlined(
-                modifier = Modifier.weight(1f),
-                value = via,
-                onChange = {
+        val fieldHeight = 56.dp
+
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            DropDownMenu(
+                modifier = Modifier
+                    .weight(1f)
+                    .defaultMinSize(minHeight = fieldHeight)
+                    .alignByBaseline(),
+                options = viaList,
+                label = "Via",
+                onSelect = {
                     via = it
                     isErrorOnVia = it.isBlank()
                 },
-                contentPadding = PaddingValues(start = 32.dp, end = 0.dp, top = 0.dp, bottom = 16.dp),
-                config = OutlinedInputConfig(
-                    label = "Via",
-                    capitalization = KeyboardCapitalization.Words,
-                    keyboardType = KeyboardType.Text
-                ),
-                isError = isErrorOnVia
+                isError = isErrorOnVia,
+                contentPadding = PaddingValues(start = 32.dp, bottom = 16.dp)
             )
 
             Spacer(modifier = Modifier.width(4.dp))
 
             FieldTextOutlined(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .defaultMinSize(minHeight = fieldHeight)
+                    .alignByBaseline(),
                 value = dose,
                 onChange = {
                     dose = it
                     isErrorOnDose = it.isBlank()
                 },
-                contentPadding = PaddingValues(start = 0.dp, end = 32.dp, top = 0.dp, bottom = 16.dp),
                 config = OutlinedInputConfig(
                     label = "Dose",
                     capitalization = KeyboardCapitalization.None,
                     keyboardType = KeyboardType.Number
                 ),
-                isError = isErrorOnDose
+                isError = isErrorOnDose,
+                contentPadding = PaddingValues(end = 32.dp, bottom = 16.dp)
             )
         }
 
-        Button(
+        RegisterButton(
             onClick = { showAlarmSettingsDialog = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 32.dp, end = 32.dp, bottom = 16.dp, top = 0.dp)
-        ) {
-            Text("Selecionar Horário e Dias")
-        }
+            label = "Selecionar Horário e Dias"
+        )
 
             if (showAlarmSettingsDialog) {
                 CreateAlarmDialog(

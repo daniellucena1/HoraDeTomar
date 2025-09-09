@@ -1,6 +1,7 @@
 package br.upe.horaDeTomar.ui.components
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,8 +19,8 @@ fun FieldTextOutlined(
     onChange: (String) -> Unit,
     config: OutlinedInputConfig,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 32.dp, vertical = 16.dp),
-    isError: Boolean = false
+    isError: Boolean = false,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
 ) {
     OutlinedTextField(
         value = value,
@@ -31,8 +32,8 @@ fun FieldTextOutlined(
             }
         },
         isError = isError,
-        modifier = modifier
-            .padding(contentPadding),
+        modifier = modifier.padding(contentPadding).heightIn(56.dp
+        ),
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
