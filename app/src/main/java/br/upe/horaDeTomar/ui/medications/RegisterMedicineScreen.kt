@@ -282,14 +282,15 @@ fun RegisterMedicineScreen(
             onClick = {
                 if ( medicineName.isNotBlank() &&
                      via.isNotBlank() &&
-                     dose.isNotBlank())  {
+                     dose.isNotBlank() &&
+                     selectedImageUri != null)  {
                     coroutineScope.launch {
                         val persistedPath = context.persistImage(selectedImageUri!!)
                         val medication = Medication(
                             name = medicineName,
                             via = via,
                             dose = dose,
-                            userId = 1, // Assumindo uma user ID fixa para simplificação
+                            userId = 1,
                             imageUri = persistedPath
                         )
                         viewModel.updateMedicationCreationState(medication)
@@ -301,6 +302,9 @@ fun RegisterMedicineScreen(
                     isErrorOnMedicineName = medicineName.isBlank()
                     isErrorOnVia = via.isBlank()
                     isErrorOnDose = dose.isBlank()
+                    if ( selectedImageUri == null ) {
+                        Toast.makeText(context, "Selecione uma imagem", Toast.LENGTH_LONG).show()
+                    }
                 }
             },
             label = "Cadastrar Medicamento",
