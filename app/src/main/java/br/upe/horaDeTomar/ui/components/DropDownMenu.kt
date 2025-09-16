@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,6 +62,7 @@ fun DropDownMenu(
     Column(
         modifier = modifier.padding(contentPadding)
     ) {
+
         ExposedDropdownMenuBox (
             expanded = isDropDownExpanded,
             onExpandedChange = { isDropDownExpanded = it },
@@ -69,7 +71,6 @@ fun DropDownMenu(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth()
-                    .heightIn(56.dp)
                     .border(
                         border = BorderStroke(
                             stroke.dp,

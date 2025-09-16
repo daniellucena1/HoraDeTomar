@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,6 +38,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -185,51 +187,35 @@ fun RegisterMedicineScreen(
                 capitalization = KeyboardCapitalization.Words,
                 keyboardType = KeyboardType.Text
             ),
-            isError = isErrorOnMedicineName
+            isError = isErrorOnMedicineName,
+            contentPadding = PaddingValues(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 8.dp)
         )
 
-        val fieldHeight = 56.dp
+        DropDownMenu(
+            options = viaList,
+            label = "Via",
+            onSelect = {
+                via = it
+                isErrorOnVia = it.isBlank()
+            },
+            isError = isErrorOnVia,
+            contentPadding = PaddingValues(horizontal = 32.dp, vertical = 10.dp)
+        )
 
-        Row (
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            DropDownMenu(
-                modifier = Modifier
-                    .weight(1f)
-                    .defaultMinSize(minHeight = fieldHeight)
-                    .alignByBaseline(),
-                options = viaList,
-                label = "Via",
-                onSelect = {
-                    via = it
-                    isErrorOnVia = it.isBlank()
-                },
-                isError = isErrorOnVia,
-                contentPadding = PaddingValues(start = 32.dp, bottom = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            FieldTextOutlined(
-                modifier = Modifier
-                    .weight(1f)
-                    .defaultMinSize(minHeight = fieldHeight)
-                    .alignByBaseline(),
-                value = dose,
-                onChange = {
-                    dose = it
-                    isErrorOnDose = it.isBlank()
-                },
-                config = OutlinedInputConfig(
-                    label = "Dose",
-                    capitalization = KeyboardCapitalization.None,
-                    keyboardType = KeyboardType.Number
-                ),
-                isError = isErrorOnDose,
-                contentPadding = PaddingValues(end = 32.dp, bottom = 16.dp)
-            )
-        }
+        FieldTextOutlined(
+            value = dose,
+            onChange = {
+                dose = it
+                isErrorOnDose = it.isBlank()
+            },
+            config = OutlinedInputConfig(
+                label = "Dose",
+                capitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Number
+            ),
+            isError = isErrorOnDose,
+            contentPadding = PaddingValues(horizontal = 32.dp, vertical = 10.dp)
+        )
 
         RegisterButton(
             onClick = { showAlarmSettingsDialog = true },

@@ -32,8 +32,8 @@ fun FieldTextOutlined(
             }
         },
         isError = isError,
-        modifier = modifier.padding(contentPadding).heightIn(56.dp
-        ),
+        modifier = modifier.padding(contentPadding)
+        ,
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
