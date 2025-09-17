@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,6 +42,7 @@ import br.upe.horaDeTomar.ui.themes.md_theme_light_primaryContainer
 import br.upe.horaDeTomar.ui.themes.white
 import com.google.gson.Gson
 import br.upe.horaDeTomar.R
+import br.upe.horaDeTomar.ui.components.DropDownMenu
 import br.upe.horaDeTomar.ui.medications.AlarmActions
 
 @Preview(device = Devices.PIXEL_4_XL)
@@ -90,6 +92,12 @@ fun CreateAlarmScreen(
 ) {
     val cardContainerColor by animateColorAsState(targetValue = md_theme_light_primaryContainer)
 
+    val options = listOf<Int>(1, 2, 3, 4)
+    var rep by remember { mutableStateOf(0) }
+    var isErrorOnRep by remember {
+        mutableStateOf(false)
+    }
+
     BoxWithConstraints (
         modifier = Modifier.fillMaxWidth().wrapContentHeight()
     ) {
@@ -107,13 +115,27 @@ fun CreateAlarmScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            AlarmPicker(
-                modifier = Modifier
-                    .padding( start = alarmPickerPaddingStart, end = boxWithConstraintsScope.maxWidth/6),
-                alarmCreationState = alarmCreationState,
-                updateAlarmCreationState = { alarmActions.updateAlarmCreationState(it) },
-                cardContainerColor = cardContainerColor
+            DropDownMenu(
+                options = options,
+                label = "Quantas vezes por dia?",
+                onSelect = {
+                    rep = it.toInt()
+                    isErrorOnRep = it.isBlank()
+                },
+                isError = isErrorOnRep,
+                contentPadding = PaddingValues(0.dp),
+                aligmentType = Alignment.Center
             )
+
+            for (i: Int in 0 until rep) {
+                AlarmPicker(
+                    modifier = Modifier
+                        .padding( start = alarmPickerPaddingStart, end = boxWithConstraintsScope.maxWidth/6),
+                    alarmCreationState = alarmCreationState,
+                    updateAlarmCreationState = { alarmActions.updateAlarmCreationState(it) },
+                    cardContainerColor = cardContainerColor
+                )
+            }
 
             CustomizeAlarmEvent(
                 modifier = Modifier

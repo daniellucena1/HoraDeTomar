@@ -48,12 +48,13 @@ import br.upe.horaDeTomar.ui.themes.white
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropDownMenu(
-    options: List<String>,
+    options: List<Any>,
     label: String,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
     isError: Boolean,
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    aligmentType: Alignment = Alignment.CenterStart
 ) {
     var isDropDownExpanded by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
@@ -83,10 +84,10 @@ fun DropDownMenu(
                         stroke = if (isDropDownExpanded) 2 else 1
                     }
                     .padding(16.dp),
-                contentAlignment = Alignment.CenterStart
+                contentAlignment = aligmentType
             ) {
                 Text(
-                    text = selectedIndex?.let { options[it] } ?: label,
+                    text = selectedIndex?.let { options[it].toString() } ?: label,
                     color = text_balck,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal
@@ -102,11 +103,11 @@ fun DropDownMenu(
             ) {
                 options.forEachIndexed { index, value ->
                     DropdownMenuItem(
-                        text = { Text(value) },
+                        text = { Text(value.toString()) },
                         onClick = {
                             selectedIndex = index
                             isDropDownExpanded = false
-                            onSelect(value)
+                            onSelect(value.toString())
                             stroke = 1
                         }
                     )

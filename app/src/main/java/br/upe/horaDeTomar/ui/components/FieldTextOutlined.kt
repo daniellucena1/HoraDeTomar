@@ -32,13 +32,13 @@ fun FieldTextOutlined(
             }
         },
         isError = isError,
-        modifier = modifier.padding(contentPadding)
-        ,
+        modifier = modifier.padding(contentPadding),
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = config.capitalization,
             keyboardType = config.keyboardType
-        )
+        ),
+
     )
 }
