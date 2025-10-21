@@ -99,6 +99,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.runtime.saveable)
+    implementation(libs.androidx.foundation.layout)
 
     ksp("com.google.dagger:hilt-compiler:2.56.2")
     ksp("androidx.room:room-compiler:2.7.2")
