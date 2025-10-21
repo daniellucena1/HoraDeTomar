@@ -1,7 +1,7 @@
 package br.upe.horaDeTomar.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -15,16 +15,16 @@ import br.upe.horaDeTomar.ui.themes.white
 
 @Composable
 fun RegisterButton(
-    onClick:() -> Unit,
+    onClick: () -> Unit,
     label: String,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(start = 32.dp, end = 32.dp, top = 0.dp, bottom = 16.dp),
-        shape = RoundedCornerShape(15.dp),
+            .height(52.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = green_primary,
             contentColor = white

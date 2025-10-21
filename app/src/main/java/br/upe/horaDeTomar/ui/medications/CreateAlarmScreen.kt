@@ -92,7 +92,7 @@ fun CreateAlarmScreen(
 ) {
     val cardContainerColor by animateColorAsState(targetValue = md_theme_light_primaryContainer)
 
-    val options = listOf<Int>(1, 2, 3, 4)
+    val options = listOf<String>("1", "2", "3", "4")
     var rep by remember { mutableStateOf(0) }
     var isErrorOnRep by remember {
         mutableStateOf(false)
@@ -123,8 +123,7 @@ fun CreateAlarmScreen(
                     isErrorOnRep = it.isBlank()
                 },
                 isError = isErrorOnRep,
-                contentPadding = PaddingValues(0.dp),
-                aligmentType = Alignment.Center
+                contentPadding = PaddingValues(0.dp)
             )
 
             for (i: Int in 0 until rep) {

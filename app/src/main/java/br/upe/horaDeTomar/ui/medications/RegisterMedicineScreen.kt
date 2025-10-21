@@ -5,81 +5,49 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.material3.TimePicker
-import br.upe.horaDeTomar.R
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TimePickerState
-import androidx.compose.material3.rememberTimePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import br.upe.horaDeTomar.ui.components.CardTextField
+import br.upe.horaDeTomar.ui.components.CardSelectField
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Devices.PIXEL_7
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import br.upe.horaDeTomar.R
 import br.upe.horaDeTomar.data.entities.Medication
-import br.upe.horaDeTomar.navigation.TopLevelsDestinations
+import br.upe.horaDeTomar.ui.components.CardActionField
 import br.upe.horaDeTomar.ui.components.DropDownMenu
 import br.upe.horaDeTomar.ui.components.FieldTextOutlined
 import br.upe.horaDeTomar.ui.components.RegisterButton
 import br.upe.horaDeTomar.ui.components.SelectPhotoButton
 import br.upe.horaDeTomar.ui.components.TakePhotoButton
-import br.upe.horaDeTomar.ui.components.TimePickerDialog
-import br.upe.horaDeTomar.ui.config.OutlinedInputConfig
-import br.upe.horaDeTomar.ui.themes.black
-import br.upe.horaDeTomar.ui.themes.green_secondary
+import br.upe.horaDeTomar.ui.themes.*
 import br.upe.horaDeTomar.util.createTempPictureUri
 import br.upe.horaDeTomar.util.persistImage
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.jar.Manifest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,138 +55,140 @@ fun RegisterMedicineScreen(
     viewModel: MedicationsViewModel = hiltViewModel(),
     navControler: NavController,
 ) {
-
-    // Variáveis de estado para os campos do formulário
     var medicineName by remember { mutableStateOf("") }
     var via by remember { mutableStateOf("") }
     var dose by remember { mutableStateOf("") }
-    val viaList = listOf<String>("Oral", "Tópico", "Sublingual")
+    val viaList = listOf("Oral", "Tópico", "Sublingual")
 
-    // Variáveis de estado para o seletor de horário
-    val currentTime = Calendar.getInstance()
+    val currentTime = Calendar.getInstance() // mantém se você precisar depois
 
-    // variável de estado para a imagem do remédio
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
 
-    var selectedImageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-
-    var tempPhotoUri by remember {
-        mutableStateOf(Uri.EMPTY)
-    }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var tempPhotoUri by remember { mutableStateOf(Uri.EMPTY) }
 
     val singlePhotoSelectContract = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> selectedImageUri = uri}
+        onResult = { uri -> selectedImageUri = uri }
     )
-
     val singlePhotoTakeContract = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
-        onResult = { success ->
-            if (success) selectedImageUri = tempPhotoUri
-        }
+        onResult = { success -> if (success) selectedImageUri = tempPhotoUri }
     )
-
     val cameraPermissionState = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
             if (isGranted) {
-               tempPhotoUri = context.createTempPictureUri()
-               singlePhotoTakeContract.launch(tempPhotoUri)
+                tempPhotoUri = context.createTempPictureUri()
+                singlePhotoTakeContract.launch(tempPhotoUri)
             } else {
                 Toast.makeText(context, "Permissão da câmera negada", Toast.LENGTH_SHORT).show()
             }
         }
     )
 
-    // variáveis de erro para variáveis de estado para os campos nulas
     var isErrorOnMedicineName by remember { mutableStateOf(false) }
     var isErrorOnVia by remember { mutableStateOf(false) }
     var isErrorOnDose by remember { mutableStateOf(false) }
 
-    // CoroutineScope para lidar com ações assíncronas, se necessário
-    val coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
 
     var showAlarmSettingsDialog by remember { mutableStateOf(false) }
 
-    // State para o Scroll
-    val state = rememberScrollState()
-    LaunchedEffect(Unit) { state.animateScrollTo(100) }
-
-    Column (
+    BoxWithConstraints (
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
-            .verticalScroll(state),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Box(
+            .background(green_background_register_medicine)
+            .padding(horizontal = 16.dp)
+    ) {
+        Column(
             modifier = Modifier
-                .size(80.dp)
-                .shadow(4.dp, RoundedCornerShape(12.dp))
-                .background(
-                    color = green_secondary,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
+                .widthIn(max = 500.dp)
+                .align(Alignment.Center)
+                .verticalScroll(scrollState)
+                .heightIn(min = maxHeight)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_pill),
-                contentDescription = "Ícone de medicamento",
-                modifier = Modifier.fillMaxWidth(),
-                tint = black
-            )
-        }
+            Box(
+                modifier = Modifier
+                    .size(88.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(green_secondary),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_pill),
+                    contentDescription = "Ícone de medicamento",
+                    tint = text_balck
+                )
+            }
 
-        FieldTextOutlined(
-            value = medicineName,
-            onChange = {
-                medicineName = it
-                isErrorOnMedicineName = it.isBlank()
-            },
-            config = OutlinedInputConfig(
-                label = "Nome do Medicamento",
+            Spacer(Modifier.height(16.dp))
+
+            CardTextField(
+                label = "Nome do medicamento",
+                value = medicineName,
+                onValueChange = {
+                    medicineName = it
+                    isErrorOnMedicineName = it.isBlank()
+                },
+                placeholder = "Ex: Paracetamol",
                 capitalization = KeyboardCapitalization.Words,
-                keyboardType = KeyboardType.Text
-            ),
-            isError = isErrorOnMedicineName,
-            contentPadding = PaddingValues(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 8.dp)
-        )
+                keyboardType = KeyboardType.Text,
+                isError = isErrorOnMedicineName,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+            )
 
-        DropDownMenu(
-            options = viaList,
-            label = "Via",
-            onSelect = {
-                via = it
-                isErrorOnVia = it.isBlank()
-            },
-            isError = isErrorOnVia,
-            contentPadding = PaddingValues(horizontal = 32.dp, vertical = 10.dp)
-        )
+            CardSelectField(
+                label = "Via",
+                value = via.ifBlank { null },
+                onValueChange = {
+                    via = it
+                    isErrorOnVia = it.isBlank()
+                },
+                placeholder = "Selecione a via de administração",
+                options = listOf("Oral", "Tópico", "Sublingual"),
+                isError = isErrorOnVia,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+            )
 
-        FieldTextOutlined(
-            value = dose,
-            onChange = {
-                dose = it
-                isErrorOnDose = it.isBlank()
-            },
-            config = OutlinedInputConfig(
+            CardTextField(
                 label = "Dose",
+                value = dose,
+                onValueChange = {
+                    dose = it
+                    isErrorOnDose = it.isBlank()
+                },
+                placeholder = "Ex: 500mg",
                 capitalization = KeyboardCapitalization.None,
-                keyboardType = KeyboardType.Number
-            ),
-            isError = isErrorOnDose,
-            contentPadding = PaddingValues(horizontal = 32.dp, vertical = 10.dp)
-        )
+                keyboardType = KeyboardType.Number,
+                isError = isErrorOnDose,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+            )
 
-        RegisterButton(
-            onClick = { showAlarmSettingsDialog = true },
-            label = "Selecionar Horário e Dias"
-        )
+
+
+            Spacer(Modifier.height(8.dp))
+
+            CardActionField(
+                label = "Horário e dias da semana",
+                valueText = null,
+                placeholder = "Selecionar",
+                onClick = { showAlarmSettingsDialog = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
+            )
 
             if (showAlarmSettingsDialog) {
                 CreateAlarmDialog(
@@ -233,71 +203,85 @@ fun RegisterMedicineScreen(
                 )
             }
 
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            SelectPhotoButton(
-                onClick = {
-                    singlePhotoSelectContract.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 4.dp)
-            )
-            TakePhotoButton(
-                onClick = {
-                    focusManager.clearFocus()
-                    cameraPermissionState.launch(
-                        android.Manifest.permission.CAMERA
-                    )
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 4.dp)
-            )
-        }
+            Spacer(Modifier.height(8.dp))
 
-        if (selectedImageUri != null) {
-            AsyncImage(
-                model = selectedImageUri,
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        RegisterButton(
-            onClick = {
-                if ( medicineName.isNotBlank() &&
-                     via.isNotBlank() &&
-                     dose.isNotBlank() &&
-                     selectedImageUri != null)  {
-                    coroutineScope.launch {
-                        val persistedPath = context.persistImage(selectedImageUri!!)
-                        val medication = Medication(
-                            name = medicineName,
-                            via = via,
-                            dose = dose,
-                            userId = 1,
-                            imageUri = persistedPath
+            Row(Modifier.fillMaxWidth()) {
+                SelectPhotoButton(
+                    onClick = {
+                        singlePhotoSelectContract.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
-                        viewModel.updateMedicationCreationState(medication)
-                        viewModel.createMedication()
-                        navControler.popBackStack()
-                    }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 4.dp)
+                )
+                TakePhotoButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        cameraPermissionState.launch(android.Manifest.permission.CAMERA)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp)
+                )
+            }
 
-                } else {
-                    isErrorOnMedicineName = medicineName.isBlank()
-                    isErrorOnVia = via.isBlank()
-                    isErrorOnDose = dose.isBlank()
-                    if ( selectedImageUri == null ) {
-                        Toast.makeText(context, "Selecione uma imagem", Toast.LENGTH_LONG).show()
-                    }
+            if (selectedImageUri != null) {
+                Spacer(Modifier.height(8.dp))
+                ElevatedCard(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.elevatedCardColors(containerColor = green_card)
+                ) {
+                    AsyncImage(
+                        model = selectedImageUri,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp)),
+                        contentScale = ContentScale.Crop
+                    )
                 }
-            },
-            label = "Cadastrar Medicamento",
-        )
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            RegisterButton(
+                onClick = {
+                    if (medicineName.isNotBlank() && via.isNotBlank() && dose.isNotBlank() && selectedImageUri != null) {
+                        coroutineScope.launch {
+                            val persistedPath = context.persistImage(selectedImageUri!!)
+                            val medication = Medication(
+                                name = medicineName,
+                                via = via,
+                                dose = dose,
+                                userId = 1,
+                                imageUri = persistedPath
+                            )
+                            viewModel.updateMedicationCreationState(medication)
+                            viewModel.createMedication()
+                            navControler.popBackStack()
+                        }
+                    } else {
+                        isErrorOnMedicineName = medicineName.isBlank()
+                        isErrorOnVia = via.isBlank()
+                        isErrorOnDose = dose.isBlank()
+                        if (selectedImageUri == null) {
+                            Toast.makeText(context, "Selecione uma imagem", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                },
+                label = "Cadastrar Medicamento",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .padding(vertical = 6.dp)
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+        }
     }
 }
