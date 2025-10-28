@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +71,11 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
                 TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
             } else {
                 TopAppBarDefaults.pinnedScrollBehavior(topBarState)
+            }
+
+            LaunchedEffect(currentRoute) {
+                topBarState.heightOffset = 0f
+                topBarState.contentOffset = 0f
             }
 
             Scaffold(
