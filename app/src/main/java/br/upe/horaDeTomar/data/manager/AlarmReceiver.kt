@@ -32,6 +32,7 @@ class AlarmReceiver: BroadcastReceiver() {
             .setContentTitle("Hora de Tomar")
             .setContentText("Está na hora do seu remédio - Clique para saber mais")
             .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(VISIBILITY_PUBLIC)
             .setFullScreenIntent(pendingIntent, true)
             .setAutoCancel(true)
@@ -45,7 +46,7 @@ class AlarmReceiver: BroadcastReceiver() {
                 return@with
             }
 
-            notify(2, builder.build())
+            notify(alarmId, builder.build())
         }
     }
 }

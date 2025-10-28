@@ -3,11 +3,13 @@ package br.upe.horaDeTomar
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -23,6 +25,7 @@ import java.util.jar.Manifest
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createNotificationChannels()
@@ -36,6 +39,16 @@ class MainActivity : ComponentActivity() {
                     this,
                     arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
                     1001
+                )
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val am = getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
+            if (!am.canScheduleExactAlarms()) {
+                startActivity(
+                    Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                        .setData(android.net.Uri.parse("package:$packageName"))
                 )
             }
         }
@@ -67,20 +80,31 @@ class MainActivity : ComponentActivity() {
 
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Hora de Tomar"
-            val descriptionText = "Alarme de Medicamento"
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channelId = "Alarme de Medicamento 222"
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
+            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            val alarmNotif = NotificationChannel(
+                CHANNEL_ID,
+                "Hora de Tomar – Alarme",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notificações de alarme de medicamento"
+                enableVibration(true)
+                setShowBadge(false)
             }
-            // Register the channel with the system.
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+            nm.createNotificationChannel(alarmNotif)
+            val serviceChannel = NotificationChannel(
+                "alarm_channel",
+                "Hora de Tomar – Serviço de Alarme",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Toque e tela do alarme"
+                enableVibration(true)
+            }
+            nm.createNotificationChannel(serviceChannel)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     @Preview(showSystemUi = true)
     @Composable
     fun DefaultPreview() {
