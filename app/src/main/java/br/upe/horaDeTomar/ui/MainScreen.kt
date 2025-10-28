@@ -30,18 +30,23 @@ import br.upe.horaDeTomar.ui.reminders.RemindersScreen
 import br.upe.horaDeTomar.ui.settings.SettingsScreen
 import br.upe.horaDeTomar.ui.users.UserRegisterScreen
 import br.upe.horaDeTomar.ui.users.UsersScreen
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.foundation.background
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.foundation.layout.WindowInsets
+import br.upe.horaDeTomar.ui.themes.green_background_register_medicine
+import br.upe.horaDeTomar.ui.themes.green_secondary
 
 @Composable
 fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
     val startup by viewModel.startup.collectAsStateWithLifecycle()
 
     when (val s = startup) {
-        StartupState.Loading -> {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-
+        StartupState.Loading -> { /* ... */ }
         is StartupState.Ready -> {
             val hasAccount = s.hasAccount
             val userName = s.firstAccountName.orEmpty()
@@ -56,12 +61,16 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
             val showTopBar = currentRoute !in hideBarsOn
             val showBottomBar = currentRoute in topLevelRoutes
 
+            val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
             Scaffold(
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 topBar = {
                     if (showTopBar) {
                         HeaderSection(
                             navController = navController,
-                            userName = userName
+                            userName = userName,
+                            scrollBehavior = scrollBehavior
                         )
                     }
                 },
@@ -72,43 +81,46 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
                             topLevelRoutes = TopLevelsDestinations.bottomNavItems
                         )
                     }
-                }
+                },
+                contentWindowInsets = WindowInsets(0.dp)
             ) { innerPadding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = if (hasAccount) TopLevelsDestinations.Home.route else "registerUser",
-                    modifier = Modifier.padding(innerPadding)
-                ) {
-                    composable(TopLevelsDestinations.Home.route) {
-                        HomePageScreen(navController = navController)
-                    }
-                    composable(TopLevelsDestinations.Medications.route) {
-                        MedicationsScreen(navController = navController)
-                    }
-                    composable(TopLevelsDestinations.Reminders.route) {
-                        RemindersScreen(navController = navController)
-                    }
-                    composable(TopLevelsDestinations.Users.route) {
-                        UsersScreen(navController = navController)
-                    }
-                    composable(TopLevelsDestinations.Settings.route) { SettingsScreen() }
+                Box(Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)) {
 
-                    composable("registerMedication") {
-                        RegisterMedicineScreen(navControler = navController)
+                    NavHost(
+                        navController = navController,
+                        startDestination = if (hasAccount) TopLevelsDestinations.Home.route else "registerUser",
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        composable(TopLevelsDestinations.Home.route) {
+                            HomePageScreen(navController = navController)
+                        }
+                        composable(TopLevelsDestinations.Medications.route) {
+                            MedicationsScreen(navController = navController)
+                        }
+                        composable(TopLevelsDestinations.Reminders.route) {
+                            RemindersScreen(navController = navController)
+                        }
+                        composable(TopLevelsDestinations.Users.route) {
+                            UsersScreen(navController = navController)
+                        }
+                        composable(TopLevelsDestinations.Settings.route) { SettingsScreen() }
+                        composable("registerMedication") { RegisterMedicineScreen(navControler = navController) }
+                        composable("registerUser") {
+                            UserRegisterScreen(
+                                onUserRegistered = {
+                                    navController.navigate(TopLevelsDestinations.Home.route) {
+                                        popUpTo("registerUser") { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                },
+                                navController = navController,
+                                isFirstTime = !hasAccount
+                            )
+                        }
+                        composable("editMedication/{medicationId}") { /* ... */ }
                     }
-                    composable("registerUser") {
-                        UserRegisterScreen(
-                            onUserRegistered = {
-                                navController.navigate(TopLevelsDestinations.Home.route) {
-                                    popUpTo("registerUser") { inclusive = true }
-                                    launchSingleTop = true
-                                }
-                            },
-                            navController = navController,
-                            isFirstTime = !hasAccount
-                        )
-                    }
-                    composable("editMedication/{medicationId}") { /* ... */ }
                 }
             }
         }
