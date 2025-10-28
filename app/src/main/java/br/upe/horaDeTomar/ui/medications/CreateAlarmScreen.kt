@@ -1,5 +1,7 @@
 package br.upe.horaDeTomar.ui.medications
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -43,8 +45,13 @@ import br.upe.horaDeTomar.ui.themes.white
 import com.google.gson.Gson
 import br.upe.horaDeTomar.R
 import br.upe.horaDeTomar.ui.components.DropDownMenu
-import br.upe.horaDeTomar.ui.medications.AlarmActions
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
+import br.upe.horaDeTomar.ui.medications.MedicationsViewModel
+import br.upe.horaDeTomar.util.helpers.toStableDaysJson
 
+
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Preview(device = Devices.PIXEL_4_XL)
 @Composable
 private fun CreateAlarmDialogPreview() {
@@ -57,6 +64,7 @@ private fun CreateAlarmDialogPreview() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun CreateAlarmDialog(
     onDismissRequest: () -> Unit,
@@ -83,6 +91,7 @@ fun CreateAlarmDialog(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun CreateAlarmScreen(
     modifier: Modifier = Modifier,
@@ -90,67 +99,58 @@ fun CreateAlarmScreen(
     alarmActions: AlarmActions,
     navigateToAlarmList: () -> Unit = {}
 ) {
+    val vm = alarmActions as MedicationsViewModel
+    val pending = vm.pendingAlarms
+
     val cardContainerColor by animateColorAsState(targetValue = md_theme_light_primaryContainer)
+    var repError by remember { mutableStateOf(false) }
 
-    val options = listOf<String>("1", "2", "3", "4")
-    var rep by remember { mutableStateOf(0) }
-    var isErrorOnRep by remember {
-        mutableStateOf(false)
-    }
-
-    BoxWithConstraints (
-        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val boxWithConstraintsScope = this
-        val alarmPickerPaddingStart =
-            if (boxWithConstraintsScope.maxWidth > 400.dp) {
-                dimensionResource(id = R.dimen.alarm_picker_padding_start_large)
-            } else {
-                dimensionResource(
-                    id = R.dimen.alarm_picker_padding_start_small,
-                )
-            }
-        Column (
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            DropDownMenu(
-                options = options,
-                label = "Quantas vezes por dia?",
-                onSelect = {
-                    rep = it.toInt()
-                    isErrorOnRep = it.isBlank()
+        DropDownMenu(
+            options = listOf("1", "2", "3", "4"),
+            label = "Quantas vezes por dia?",
+            onSelect = { sel ->
+                val rep = sel.toIntOrNull() ?: 0
+                vm.preparePendingAlarms(rep)
+                repError = rep == 0
+            },
+            isError = repError,
+            contentPadding = PaddingValues(0.dp)
+        )
+
+        pending.forEachIndexed { index, a ->
+            AlarmPicker(
+                index = index,
+                alarm = a,
+                onChange = { idx, h, m ->
+                    vm.updatePendingAlarm(idx, hour = h, minute = m)
                 },
-                isError = isErrorOnRep,
-                contentPadding = PaddingValues(0.dp)
-            )
-
-            for (i: Int in 0 until rep) {
-                AlarmPicker(
-                    modifier = Modifier
-                        .padding( start = alarmPickerPaddingStart, end = boxWithConstraintsScope.maxWidth/6),
-                    alarmCreationState = alarmCreationState,
-                    updateAlarmCreationState = { alarmActions.updateAlarmCreationState(it) },
-                    cardContainerColor = cardContainerColor
-                )
-            }
-
-            CustomizeAlarmEvent(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                alarmCreationState = alarmCreationState,
-                updateAlarmCreationState = { alarmActions.updateAlarmCreationState(it) }
-            )
-            Buttons(
-
-                navigateToAlarmList = navigateToAlarmList,
-                save = navigateToAlarmList
-
+                cardContainerColor = cardContainerColor,
+                modifier = Modifier.fillMaxWidth()
             )
         }
+
+        val baseForDays = pending.firstOrNull() ?: alarmCreationState
+        CustomizeAlarmEvent(
+            modifier = Modifier.fillMaxWidth(),
+            alarmCreationState = baseForDays,
+            updateAlarmCreationState = { updated ->
+                val json = updated.daysSelectedJson
+                pending.indices.forEach { i -> vm.updatePendingAlarm(i, daysJson = json) }
+            }
+        )
+
+        Buttons(
+            navigateToAlarmList = navigateToAlarmList,
+            save = navigateToAlarmList
+        )
     }
 }
+
+
 
 @Composable
 private fun CustomizeAlarmEvent(
@@ -180,25 +180,23 @@ private fun CustomizeAlarmEvent(
 
 @Composable
 fun AlarmPicker(
-    alarmCreationState: Alarm,
-    updateAlarmCreationState: (Alarm) -> Unit,
+    index: Int,
+    alarm: Alarm,
+    onChange: (index: Int, hour: String?, minute: String?) -> Unit,
     modifier: Modifier = Modifier,
     cardContainerColor: Color,
 ) {
     val textType = MaterialTheme.typography.displaySmall
 
-    var hours by rememberSaveable( stateSaver = TextFieldValue.Saver ) {
-        mutableStateOf(TextFieldValue(alarmCreationState.hour))
+    var hours by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(alarm.hour))
+    }
+    var minutes by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(alarm.minute))
     }
 
-    var minutes by rememberSaveable( stateSaver = TextFieldValue.Saver ) {
-        mutableStateOf(TextFieldValue(alarmCreationState.minute))
-    }
-
-    Box(
-        modifier = modifier
-    ) {
-        Row (
+    Box(modifier = modifier) {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -210,9 +208,9 @@ fun AlarmPicker(
                 modifier = Modifier.weight(1f),
                 number = hours,
                 onNumberChange = { value ->
-                    if ( value.text.checkNumberPicker(maxNumber = 23)) {
+                    if (value.text.checkNumberPicker(maxNumber = 23)) {
                         hours = value
-                        updateAlarmCreationState(alarmCreationState.copy(hour = hours.text))
+                        onChange(index, value.text, null)
                     }
                 },
                 textStyle = textType,
@@ -235,13 +233,14 @@ fun AlarmPicker(
                 onNumberChange = { value ->
                     if (value.text.checkNumberPicker(maxNumber = 59)) {
                         minutes = value
-                        updateAlarmCreationState(alarmCreationState.copy(minute = minutes.text))
+                        onChange(index, null, value.text)
                     }
                 },
             )
         }
     }
 }
+
 
 fun String?.parseInt(): Int {
     return if (this.isNullOrEmpty()) 0 else this.toInt()
@@ -275,13 +274,12 @@ private fun WeekDays(
                 text = day,
                 onChecked = { isChecked ->
                     daysSelected[day] = isChecked
-                    val activeDays = daysSelected.filterValues { it }.keys;
+                    val stableJson = daysSelected.toMap().toStableDaysJson()
                     updateAlarmCreationState(
-                        alarmCreationState.copy(
-                            daysSelectedJson = Gson().toJson(daysSelected)
-                        )
+                        alarmCreationState.copy(daysSelectedJson = stableJson)
                     )
                 }
+
             )
         }
     }

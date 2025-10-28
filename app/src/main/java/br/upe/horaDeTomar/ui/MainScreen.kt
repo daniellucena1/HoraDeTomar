@@ -2,6 +2,8 @@
 
 package br.upe.horaDeTomar.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -12,8 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +27,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import br.upe.horaDeTomar.navigation.BottomBarNav
 import br.upe.horaDeTomar.navigation.TopLevelsDestinations
 import br.upe.horaDeTomar.ui.components.HeaderSection
@@ -34,23 +38,18 @@ import br.upe.horaDeTomar.ui.reminders.RemindersScreen
 import br.upe.horaDeTomar.ui.settings.SettingsScreen
 import br.upe.horaDeTomar.ui.users.UserRegisterScreen
 import br.upe.horaDeTomar.ui.users.UsersScreen
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.foundation.background
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.foundation.layout.WindowInsets
-import br.upe.horaDeTomar.ui.themes.green_background_register_medicine
-import br.upe.horaDeTomar.ui.themes.green_secondary
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
     val startup by viewModel.startup.collectAsStateWithLifecycle()
 
     when (val s = startup) {
-        StartupState.Loading -> { /* ... */ }
+        StartupState.Loading -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
         is StartupState.Ready -> {
             val hasAccount = s.hasAccount
             val userName = s.firstAccountName.orEmpty()
@@ -65,10 +64,20 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
             val showTopBar = currentRoute !in hideBarsOn
             val showBottomBar = currentRoute in topLevelRoutes
 
-            val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+            val isHome = currentRoute == TopLevelsDestinations.Home.route
+            val topBarState = rememberTopAppBarState()
+            val scrollBehavior = if (isHome) {
+                TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
+            } else {
+                TopAppBarDefaults.pinnedScrollBehavior(topBarState)
+            }
 
             Scaffold(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                modifier = if (showTopBar) {
+                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                } else {
+                    Modifier
+                },
                 topBar = {
                     if (showTopBar) {
                         HeaderSection(
@@ -85,62 +94,77 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
                             topLevelRoutes = TopLevelsDestinations.bottomNavItems
                         )
                     }
-                },
-                contentWindowInsets = WindowInsets(0.dp)
+                }
             ) { innerPadding ->
-                Box(Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)) {
-
-                    NavHost(
-                        navController = navController,
-                        startDestination = if (hasAccount) TopLevelsDestinations.Home.route else "registerUser",
-                        modifier = Modifier.fillMaxSize(),
-                        enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(220)) + fadeIn(tween(180)) },
-                        exitTransition = {
-                            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(220)) + fadeOut(tween(180))
-                        },
-                        popEnterTransition = {
-                            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(220)) + fadeIn(tween(180))
-                        },
-                        popExitTransition = {
-                            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(220)) + fadeOut(tween(180))
-                        }
-                    ) {
-                        composable(TopLevelsDestinations.Home.route) {
-                            HomePageScreen(navController = navController)
-                        }
-                        composable(TopLevelsDestinations.Medications.route) {
-                            MedicationsScreen(navController = navController)
-                        }
-                        composable(TopLevelsDestinations.Reminders.route) {
-                            RemindersScreen(navController = navController)
-                        }
-                        composable(TopLevelsDestinations.Users.route) {
-                            UsersScreen(navController = navController)
-                        }
-                        composable(TopLevelsDestinations.Settings.route) { SettingsScreen() }
-                        composable("registerMedication") { RegisterMedicineScreen(navControler = navController) }
-                        composable("registerUser") {
-                            UserRegisterScreen(
-                                onUserRegistered = {
-                                    navController.navigate(TopLevelsDestinations.Home.route) {
-                                        popUpTo("registerUser") { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                },
-                                navController = navController,
-                                isFirstTime = !hasAccount
-                            )
-                        }
-                        composable("editMedication/{medicationId}") { /* ... */ }
+                NavHost(
+                    navController = navController,
+                    startDestination = if (hasAccount) TopLevelsDestinations.Home.route else "registerUser",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    enterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(220)
+                        ) + fadeIn(tween(180))
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(220)
+                        ) + fadeOut(tween(180))
+                    },
+                    popEnterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(220)
+                        ) + fadeIn(tween(180))
+                    },
+                    popExitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(220)
+                        ) + fadeOut(tween(180))
                     }
+                ) {
+                    composable(TopLevelsDestinations.Home.route) {
+                        HomePageScreen(navController = navController)
+                    }
+                    composable(TopLevelsDestinations.Medications.route) {
+                        MedicationsScreen(navController = navController)
+                    }
+                    composable(TopLevelsDestinations.Reminders.route) {
+                        RemindersScreen(navController = navController)
+                    }
+                    composable(TopLevelsDestinations.Users.route) {
+                        UsersScreen(navController = navController)
+                    }
+                    composable(TopLevelsDestinations.Settings.route) {
+                        SettingsScreen()
+                    }
+                    composable("registerMedication") {
+                        RegisterMedicineScreen(navControler = navController)
+                    }
+                    composable("registerUser") {
+                        UserRegisterScreen(
+                            onUserRegistered = {
+                                navController.navigate(TopLevelsDestinations.Home.route) {
+                                    popUpTo("registerUser") { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            },
+                            navController = navController,
+                            isFirstTime = !hasAccount
+                        )
+                    }
+                    composable("editMedication/{medicationId}") { }
                 }
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Preview(showBackground = true, showSystemUi = true, apiLevel = 35)
 @Composable
 fun MainScreenPreview() {
