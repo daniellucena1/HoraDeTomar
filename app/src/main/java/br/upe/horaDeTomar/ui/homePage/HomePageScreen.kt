@@ -44,23 +44,16 @@ fun HomePageScreen(
     val alarmByMedicationId = remember(alarmListState) {
         alarmListState
             .groupBy { it.medicationId }
-            .mapValues { (_, alarms) ->
-                alarms.minByOrNull { a ->
-                    val h = a.hour.toIntOrNull() ?: 0
-                    val m = a.minute.toIntOrNull() ?: 0
-                    LocalTime.of(h, m)
-                }
-            }
     }
 
     val filteredMeds = remember(medicationsState, alarmByMedicationId, selectedFilter) {
         medicationsState.filter { med ->
-            val alarm = alarmByMedicationId[med.id]
+            val alarms = alarmByMedicationId[med.id].orEmpty()
             when (selectedFilter) {
                 TimeFilter.All -> true
-                TimeFilter.Morning -> alarm?.hour?.toIntOrNull()?.let { it in 5..11 } ?: false
-                TimeFilter.Afternoon -> alarm?.hour?.toIntOrNull()?.let { it in 12..17 } ?: false
-                TimeFilter.Night -> alarm?.hour?.toIntOrNull()?.let { it in 18..23 || it in 0..4 } ?: false
+                TimeFilter.Morning   -> alarms.any { it.hour.toIntOrNull()?.let { h -> h in 5..11 } == true }
+                TimeFilter.Afternoon -> alarms.any { it.hour.toIntOrNull()?.let { h -> h in 12..17 } == true }
+                TimeFilter.Night     -> alarms.any { it.hour.toIntOrNull()?.let { h -> h in 18..23 || h in 0..4 } == true }
             }
         }
     }
@@ -180,13 +173,19 @@ fun HomePageScreen(
             }
         } else {
             items(filteredMeds, key = { it.id.hashCode() }) { medication ->
-                val alarm = alarmByMedicationId[medication.id]
-                val hour = (alarm?.hour ?: "").twoDigitsOrDash()
-                val minute = (alarm?.minute ?: "").twoDigitsOrDash()
+                val times = alarmByMedicationId[medication.id]
+                    .orEmpty()
+                    .sortedBy { a ->
+                        val h = a.hour.toIntOrNull() ?: 0
+                        val m = a.minute.toIntOrNull() ?: 0
+                        LocalTime.of(h, m)
+                    }
+                    .map { a -> "${a.hour.twoDigitsOrDash()}:${a.minute.twoDigitsOrDash()}" }
+                val timesText = times.joinToString(", ")
                 MedicineHomePageCard(
                     medicineName = medication.name,
                     dose = "${medication.dose}",
-                    time = "$hour:$minute",
+                    time = timesText,
                     imageUri = medication.imageUri
                 )
                 Spacer(Modifier.height(8.dp))
