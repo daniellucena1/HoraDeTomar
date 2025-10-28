@@ -185,7 +185,7 @@ fun HomePageScreen(
                 val minute = (alarm?.minute ?: "").twoDigitsOrDash()
                 MedicineHomePageCard(
                     medicineName = medication.name,
-                    dose = "${medication.dose} comprimido(s)",
+                    dose = "${medication.dose}",
                     time = "$hour:$minute",
                     imageUri = medication.imageUri
                 )

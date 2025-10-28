@@ -2,6 +2,10 @@
 
 package br.upe.horaDeTomar.ui
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -91,7 +95,17 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
                     NavHost(
                         navController = navController,
                         startDestination = if (hasAccount) TopLevelsDestinations.Home.route else "registerUser",
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(220)) + fadeIn(tween(180)) },
+                        exitTransition = {
+                            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(220)) + fadeOut(tween(180))
+                        },
+                        popEnterTransition = {
+                            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(220)) + fadeIn(tween(180))
+                        },
+                        popExitTransition = {
+                            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(220)) + fadeOut(tween(180))
+                        }
                     ) {
                         composable(TopLevelsDestinations.Home.route) {
                             HomePageScreen(navController = navController)
