@@ -96,6 +96,16 @@ fun RegisterMedicineScreen(
     var isErrorOnVia by remember { mutableStateOf(false) }
     var isErrorOnDose by remember { mutableStateOf(false) }
 
+    val timesLabel = viewModel.pendingAlarms
+        .mapNotNull { a ->
+            val h = a.hour.toIntOrNull()
+            val m = a.minute.toIntOrNull()
+            if (h == null || m == null) null else "%02d:%02d".format(h, m)
+        }
+        .distinct()
+        .sorted()
+        .joinToString(", ")
+
     val scrollState = rememberScrollState()
 
     var showAlarmSettingsDialog by remember { mutableStateOf(false) }
@@ -185,7 +195,7 @@ fun RegisterMedicineScreen(
 
             CardActionField(
                 label = "Horário e dias da semana",
-                valueText = null,
+                valueText = timesLabel.ifBlank { null },
                 placeholder = "Selecionar",
                 onClick = { showAlarmSettingsDialog = true },
                 modifier = Modifier
