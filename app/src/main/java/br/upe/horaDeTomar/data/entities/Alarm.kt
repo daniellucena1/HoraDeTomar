@@ -16,12 +16,8 @@ import com.google.gson.reflect.TypeToken
         onDelete = ForeignKey.CASCADE
     )],
     indices = [
-        Index(
-            value = [
-                "hour", "minute", "daysSelectedJson",
-            ],
-            unique = true,
-        )
+        Index("medicationId"),
+        Index(value = ["medicationId","hour","minute","daysSelectedJson"], unique = true)
     ]
 )
 data class Alarm (

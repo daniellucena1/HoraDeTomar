@@ -1,126 +1,135 @@
 package br.upe.horaDeTomar.data.manager
 
 import android.app.AlarmManager
+import android.app.AlarmManager.AlarmClockInfo
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
-import android.net.Uri
 import android.os.Build
-import android.provider.Settings
 import android.util.Log
-import androidx.annotation.RequiresApi
-import br.upe.horaDeTomar.data.entities.Alarm
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import br.upe.horaDeTomar.data.entities.Alarm
 
 class AlarmScheduler @Inject constructor(
     @ApplicationContext private val context: Context,
     private val alarmManager: AlarmManager
 ) {
-
-    private val gson = Gson()
-
-    fun schedule (alarm: Alarm) {
+    fun schedule(alarm: Alarm) {
         val hour = alarm.hour.toIntOrNull() ?: 0
         val minute = alarm.minute.toIntOrNull() ?: 0
-        val daysSelected = alarm.daysSelected
 
-        daysSelected.forEach { (day, selected) ->
-            if (selected) {
-                val calendar = Calendar.getInstance().apply {
-                    timeInMillis = System.currentTimeMillis()
-                    set(Calendar.HOUR_OF_DAY, hour)
-                    set(Calendar.MINUTE, minute)
-                    set(Calendar.SECOND, 0)
-                    set(Calendar.MILLISECOND, 0)
+        alarm.daysSelected.forEach { (dayKey, selected) ->
+            if (!selected) return@forEach
 
-                    val dayOfWeek = when (day) {
-                        "Dom" -> Calendar.SUNDAY
-                        "Seg" -> Calendar.MONDAY
-                        "Ter" -> Calendar.TUESDAY
-                        "Qua" -> Calendar.WEDNESDAY
-                        "Qui" -> Calendar.THURSDAY
-                        "Sex" -> Calendar.FRIDAY
-                        "Sab" -> Calendar.SATURDAY
-                        else -> null
-                    }
+            val triggerAt = nextTriggerMillis(dayKey, hour, minute)
+            val reqCode = requestCodeFor(alarm.id, dayKey)
 
-                    dayOfWeek?.let {
-                        set(Calendar.DAY_OF_WEEK, it)
+            val intent = Intent(context, AlarmReceiver::class.java).apply {
+                putExtra("ALARM_ID", alarm.id)
+                putExtra("MEDICATION_ID", alarm.medicationId)
+            }
+            val pi = PendingIntent.getBroadcast(
+                context,
+                reqCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
 
-                        if(before(Calendar.getInstance())) {
-                            add(Calendar.WEEK_OF_YEAR, 1)
-                        }
-                    }
-                }
-
-                val intent = Intent(context, AlarmReceiver::class.java).apply {
-                    putExtra("ALARM_ID", alarm.id)
-                    putExtra("MEDICATION_ID", alarm.medicationId)
-                }
-
-                val pendingIntent = PendingIntent.getBroadcast(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                !alarmManager.canScheduleExactAlarms()
+            ) {
+                val showIntent = PendingIntent.getActivity(
                     context,
-                    alarm.id + day.hashCode(),
-                    intent,
+                    reqCode,
+                    Intent(context, br.upe.horaDeTomar.ui.reminders.AlarmActivity::class.java)
+                        .putExtra("alarmId", alarm.id)
+                        .putExtra("MEDICATION_ID", alarm.medicationId),
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
-
-                alarmManager.setAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
+                val clockInfo = AlarmClockInfo(triggerAt, showIntent)
+                alarmManager.setAlarmClock(clockInfo, pi)
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi)
             }
         }
     }
 
     fun snooze(alarmId: Int, medicationId: Int, hour: Int, minute: Int) {
-        val calendar = Calendar.getInstance().apply {
+        val cal = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
+            if (before(Calendar.getInstance())) add(Calendar.DAY_OF_YEAR, 1)
         }
 
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra("ALARM_ID", alarmId)
             putExtra("MEDICATION_ID", medicationId)
         }
-
-        val pendingIntent = PendingIntent.getBroadcast(
+        val pi = PendingIntent.getBroadcast(
             context,
-            alarmId,
+            alarmId, // snooze usa um requestCode simples
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        alarmManager.setAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            pendingIntent
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            !alarmManager.canScheduleExactAlarms()
+        ) {
+            val show = PendingIntent.getActivity(
+                context,
+                alarmId,
+                Intent(context, br.upe.horaDeTomar.ui.reminders.AlarmActivity::class.java)
+                    .putExtra("alarmId", alarmId)
+                    .putExtra("MEDICATION_ID", medicationId),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            val clockInfo = AlarmClockInfo(cal.timeInMillis, show)
+            alarmManager.setAlarmClock(clockInfo, pi)
+        } else {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.timeInMillis, pi)
+        }
     }
 
-
     fun cancelAlarm(alarm: Alarm) {
-        val daysSelected = alarm.daysSelected
-
-        daysSelected.forEach { (day, selected) ->
-            if (selected) {
-                val intent = Intent(context, AlarmReceiver::class.java)
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    alarm.id + day.hashCode(),
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                alarmManager.cancel(pendingIntent)
-            }
+        alarm.daysSelected.forEach { (dayKey, selected) ->
+            if (!selected) return@forEach
+            val intent = Intent(context, AlarmReceiver::class.java)
+            val pi = PendingIntent.getBroadcast(
+                context,
+                requestCodeFor(alarm.id, dayKey),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.cancel(pi)
         }
         Log.d("ALARM_SCHEDULE", "Alarme cancelado: ${alarm.id}")
     }
+
+    private fun nextTriggerMillis(dayKey: String, hour: Int, minute: Int): Long {
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+            set(Calendar.HOUR_OF_DAY, hour); set(Calendar.MINUTE, minute)
+            set(Calendar.DAY_OF_WEEK, dayOfWeekFromKey(dayKey))
+            if (before(Calendar.getInstance())) add(Calendar.WEEK_OF_YEAR, 1)
+        }
+        return cal.timeInMillis
+    }
+
+    private fun dayOfWeekFromKey(key: String): Int = when (key) {
+        "Dom" -> Calendar.SUNDAY
+        "Seg" -> Calendar.MONDAY
+        "Ter" -> Calendar.TUESDAY
+        "Qua" -> Calendar.WEDNESDAY
+        "Qui" -> Calendar.THURSDAY
+        "Sex" -> Calendar.FRIDAY
+        "Sab" -> Calendar.SATURDAY
+        else  -> Calendar.MONDAY
+    }
+
+    private fun requestCodeFor(alarmId: Int, dayKey: String): Int =
+        alarmId * 31 + dayKey.hashCode()
 }

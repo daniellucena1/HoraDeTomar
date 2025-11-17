@@ -22,5 +22,12 @@ class AlarmRepository @Inject constructor(
 
     suspend fun getAlarmById(id: Int) = alarmDao.getAlarmById(id)
 
-    fun getAlarmByTime(hour: String, minute: String) = alarmDao.getAlarmByTime(hour, minute)
+    fun getAlarmsForMedication(medicationId: Int): Flow<List<Alarm>> =
+        alarmDao.getAlarmsForMedication(medicationId)
+
+    suspend fun getAlarmsForMedicationOnce(medicationId: Int): List<Alarm> =
+        alarmDao.getAlarmsForMedicationOnce(medicationId)
+
+    fun getAlarmByTime(medicationId: Int, hour: String, minute: String): Flow<Alarm?> =
+        alarmDao.getAlarmByTime(medicationId, hour, minute)
 }

@@ -1,121 +1,153 @@
 package br.upe.horaDeTomar.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import br.upe.horaDeTomar.R
 import br.upe.horaDeTomar.navigation.TopLevelsDestinations
-import br.upe.horaDeTomar.ui.themes.HoraDoRemedioTheme
-import br.upe.horaDeTomar.ui.themes.green_background
-import br.upe.horaDeTomar.ui.themes.green_primary
-import br.upe.horaDeTomar.ui.themes.white
+import br.upe.horaDeTomar.ui.themes.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeaderSection(
     modifier: Modifier = Modifier,
     navController: NavController,
-    userName: String
+    userName: String,
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route.orEmpty();
+    val currentRoute = navBackStackEntry?.destination?.route.orEmpty()
     val currentTopLevel = remember(currentRoute) {
         TopLevelsDestinations.bottomNavItems.firstOrNull { it.route == currentRoute }
     }
+    val isHome = currentRoute == TopLevelsDestinations.Home.route
 
-    Column (
-        modifier = modifier
-            .fillMaxWidth()
-            .height(if (currentRoute == TopLevelsDestinations.Home.route) 140.dp else 110.dp)
-            .shadow(
-                elevation = 6.dp,
-                shape = RoundedCornerShape(
-                    topStart = 0.dp,
-                    topEnd = 0.dp,
-                    bottomStart = 12.dp,
-                    bottomEnd = 12.dp
-                )
+    val shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+    val contentStart = 24.dp
+    val titleGapFromIcon = 12.dp
+
+    val collapsedFraction = if (isHome) (scrollBehavior?.state?.collapsedFraction ?: 0f) else 1f
+    val bubbleAlphaA = (0.08f * (1f - collapsedFraction)).coerceIn(0f, 0.08f)
+    val bubbleAlphaB = (0.06f * (1f - collapsedFraction)).coerceIn(0f, 0.06f)
+
+    val appBarModifier = modifier
+        .clip(shape)
+        .drawBehind {
+            drawRect(brush = Brush.verticalGradient(listOf(md_theme_light_primary, green_primary)))
+            drawCircle(
+                color = Color.White.copy(alpha = bubbleAlphaA),
+                radius = size.minDimension * 0.45f,
+                center = Offset(x = size.width * -0.05f, y = size.height * 0.2f)
             )
-            .background(
-                color = green_primary,
-                shape = RoundedCornerShape(
-                    topStart = 0.dp,
-                    topEnd = 0.dp,
-                    bottomStart = 12.dp,
-                    bottomEnd = 12.dp
-                )
+            drawCircle(
+                color = Color.White.copy(alpha = bubbleAlphaB),
+                radius = size.minDimension * 0.35f,
+                center = Offset(x = size.width * 1.05f, y = size.height * 0.15f)
             )
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(horizontal = 16.dp)
-                .padding(top = if (currentRoute == TopLevelsDestinations.Home.route) 32.dp else 12.dp, bottom = if (currentRoute == TopLevelsDestinations.Home.route) 0.dp else 4.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Row (
-                modifier = modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Box(
+        }
+
+    if (isHome) {
+        MediumTopAppBar(
+            modifier = appBarModifier,
+            scrollBehavior = scrollBehavior,
+            windowInsets = TopAppBarDefaults.windowInsets,
+            colors = TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent,
+                navigationIconContentColor = white,
+                titleContentColor = white
+            ),
+            navigationIcon = {
+                androidx.compose.foundation.layout.Box(
                     modifier = Modifier
-                        .size(50.dp)
-                        .background(
-                            color = green_background,
-                            shape = CircleShape
-                        )
-                        .padding(8.dp),
+                        .padding(start = contentStart)
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(green_background)
+                        .padding(10.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = if (currentTopLevel != null) currentTopLevel.icon else R.drawable.ic_user),
-                        contentDescription = "Ícone de Tela",
-                        modifier = Modifier.fillMaxWidth(),
-                        tint = white
+                        painter = painterResource(id = currentTopLevel?.icon ?: R.drawable.ic_user),
+                        contentDescription = null,
+                        tint = white,
+                        modifier = Modifier.size(28.dp)
                     )
                 }
+            },
+            title = {
+                val startSize = 22.sp
+                val endSize = 18.sp
+                val size = lerp(startSize, endSize, collapsedFraction)
+                Text(
+                    text = "Olá, ${userName.ifBlank { "visitante" }}",
+                    fontSize = size,
+                    fontWeight = FontWeight.SemiBold,
+                    color = white,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = titleGapFromIcon)
+                )
             }
-        }
-        if (currentTopLevel == TopLevelsDestinations.Home) {
-            Text(
-                text = "Olá, $userName",
-                color = white,
-                modifier = Modifier
-                    .padding(start = 16.dp, bottom = 16.dp)
-                    .fillMaxWidth(),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Start,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+        )
+    } else {
+        TopAppBar(
+            modifier = appBarModifier,
+            scrollBehavior = scrollBehavior,
+            windowInsets = TopAppBarDefaults.windowInsets,
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent,
+                navigationIconContentColor = white,
+                titleContentColor = white
+            ),
+            navigationIcon = {
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .padding(start = contentStart)
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(green_background)
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = currentTopLevel?.icon ?: R.drawable.ic_user),
+                        contentDescription = null,
+                        tint = white,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            },
+            title = { Spacer(Modifier) }
+        )
     }
 }

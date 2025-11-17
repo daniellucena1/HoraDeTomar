@@ -29,9 +29,12 @@ val green_alarm_background = Color(0xFFE9F6ED)
 val alarm_button_green = Color(0xFF33CD95)
 val button_green_primary = Color(0xFF4CAF50)
 val green_card = Color(0xFFDCEEE0)
+val green_background_register_medicine = Color(0xFFf6f8f7)
 val gray_light = Color(0xFFE0E0E0)
 val gray_dark = Color(0xFF757575)
 val black = Color(0xFF000000)
+
+val text_balck = Color(0xFF57535C)
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)

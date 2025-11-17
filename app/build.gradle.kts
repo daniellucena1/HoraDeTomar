@@ -87,6 +87,20 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     // Hilt core
     implementation("com.google.dagger:hilt-android:2.56.2")
+    implementation(libs.androidx.runtime)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.foundation:foundation")
+    implementation(platform("androidx.compose:compose-bom:2024.10.01"))
+    implementation("androidx.compose.ui:ui")                  // <- fornece KeyboardOptions
+    implementation("androidx.compose.foundation:foundation")  // BasicTextField, clickable
+    implementation("androidx.compose.material3:material3")    // Surface, TextFieldDefaults, ModalBottomSheet
+
+    // Ícones do Material (resolve o Icons.*):
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.runtime.saveable)
+    implementation(libs.androidx.foundation.layout)
+
     ksp("com.google.dagger:hilt-compiler:2.56.2")
     ksp("androidx.room:room-compiler:2.7.2")
     implementation("androidx.hilt:hilt-work:1.2.0")

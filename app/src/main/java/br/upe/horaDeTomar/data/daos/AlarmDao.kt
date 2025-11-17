@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AlarmDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(alarm: Alarm) : Long
 
     @Delete
@@ -32,6 +32,13 @@ interface AlarmDao {
     @Query("SELECT id FROM alarms_list_table ORDER BY id DESC LIMIT 1")
     suspend fun getLastId(): Long?
 
-    @Query("SELECT * FROM alarms_list_table WHERE hour = :hour AND minute = :minute")
-    fun getAlarmByTime(hour: String, minute: String): Flow<Alarm?>
+    @Query("SELECT * FROM alarms_list_table WHERE medicationId = :medicationId ORDER BY hour ASC, minute ASC")
+    fun getAlarmsForMedication(medicationId: Int): Flow<List<Alarm>>
+
+    @Query("SELECT * FROM alarms_list_table WHERE medicationId = :medicationId ORDER BY hour ASC, minute ASC")
+    suspend fun getAlarmsForMedicationOnce(medicationId: Int): List<Alarm>
+
+    @Query("SELECT * FROM alarms_list_table WHERE medicationId = :medicationId AND hour = :hour AND minute = :minute")
+    fun getAlarmByTime(medicationId: Int, hour: String, minute: String): Flow<Alarm?>
+
 }

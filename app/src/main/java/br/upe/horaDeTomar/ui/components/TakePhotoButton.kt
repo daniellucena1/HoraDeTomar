@@ -3,42 +3,49 @@ package br.upe.horaDeTomar.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import br.upe.horaDeTomar.R
-import br.upe.horaDeTomar.ui.themes.black
-import br.upe.horaDeTomar.ui.themes.green_primary
-import br.upe.horaDeTomar.ui.themes.green_secondary
+import br.upe.horaDeTomar.ui.themes.*
 
 @Composable
 fun TakePhotoButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Button (
+    Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 0.dp, end = 32.dp, top = 0.dp, bottom = 16.dp),
-        shape = RoundedCornerShape(12.dp),
+            .height(52.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = green_secondary,
-            contentColor = black
+            contentColor = text_balck
         ),
-        border = BorderStroke(1.dp, green_primary),
-        contentPadding = PaddingValues(12.dp)
+        border = BorderStroke(1.dp, md_theme_light_outline),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 1.dp
+        ),
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 12.dp)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_cam),
-            contentDescription = "Ícone de câmera",
-            tint = black
+            contentDescription = "Abrir câmera",
+            tint = text_balck
         )
+        Spacer(Modifier.width(8.dp))
+        Text("Câmera")
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +31,7 @@ import br.upe.horaDeTomar.ui.components.OptionsCard
 import br.upe.horaDeTomar.ui.components.UserCard
 import br.upe.horaDeTomar.ui.themes.black
 import kotlin.math.min
+import java.time.LocalTime
 
 @Composable
 fun MedicationsScreen(
@@ -40,6 +42,10 @@ fun MedicationsScreen(
     // States e ViewModel
     val medications by viewModel.medications.collectAsState()
     val alarmStateList by viewModel.alarmListState.collectAsState()
+
+    val alarmsByMedicationId = remember(alarmStateList) {
+        alarmStateList.groupBy { it.medicationId }
+    }
 
     // State de scroll
     val state = rememberScrollState()
@@ -67,21 +73,21 @@ fun MedicationsScreen(
             Column(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)
             ) {
-                medications.forEach {
-                    medication ->
-                    var hour = ""
-                    var minute = ""
-                    alarmStateList.forEach {
-                        alarm ->
-                        if (alarm.medicationId == medication.id) {
-                            hour = alarm.hour
-                            minute = alarm.minute
+                medications.forEach { medication ->
+                    val times = alarmsByMedicationId[medication.id]
+                        .orEmpty()
+                        .sortedBy { a ->
+                            val h = a.hour.toIntOrNull() ?: 0
+                            val m = a.minute.toIntOrNull() ?: 0
+                            LocalTime.of(h, m)
                         }
-                    }
+                        .map { a -> "${a.hour.twoDigitsOrDash()}:${a.minute.twoDigitsOrDash()}" }
+
+                    val timesText = if (times.isEmpty()) "—" else times.joinToString(", ")
                     MedicineHomePageCard(
                         medicineName = medication.name,
                         dose = medication.dose,
-                        time = "${hour}:${minute}",
+                        time = timesText,
                         imageUri = medication.imageUri
                     )
                     Spacer(modifier = Modifier.height(10.dp))
@@ -99,4 +105,10 @@ fun MedicationsScreen(
             label = "Adicionar Remédio"
         )
     }
+}
+
+private fun String.twoDigitsOrDash(): String = when {
+    isBlank() -> "—"
+    length >= 2 -> this
+    else -> padStart(2, '0')
 }
