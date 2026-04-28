@@ -168,7 +168,7 @@ fun AlarmScreen(
                     contentColor = white),
                     shape = RoundedCornerShape(50),
                     modifier = Modifier.weight(1f)
-                ) { Text("Cancelar") }
+                ) { Text("Já Tomei") }
                 Spacer(Modifier.width(16.dp))
                 Button(
                     onClick = onSnooze,

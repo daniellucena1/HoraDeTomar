@@ -16,6 +16,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import br.upe.horaDeTomar.data.entities.Medication
+import br.upe.horaDeTomar.ui.components.DeleteMedicationDialog
 import br.upe.horaDeTomar.ui.components.EmptyStateCard
 import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
 import br.upe.horaDeTomar.ui.components.SectionHeader
@@ -40,6 +42,7 @@ fun HomePageScreen(
     val alarmListState by medicationViewModel.alarmListState.collectAsState()
 
     var selectedFilter by rememberSaveable { mutableStateOf(TimeFilter.All) }
+    var medicationToDelete by remember { mutableStateOf<Medication?>(null) }
 
     val alarmByMedicationId = remember(alarmListState) {
         alarmListState
@@ -186,11 +189,24 @@ fun HomePageScreen(
                     medicineName = medication.name,
                     dose = "${medication.dose}",
                     time = timesText,
-                    imageUri = medication.imageUri
+                    imageUri = medication.imageUri,
+                    onEdit = { navController.navigate("editMedication/${medication.id}") },
+                    onDelete = { medicationToDelete = medication }
                 )
                 Spacer(Modifier.height(8.dp))
             }
         }
+    }
+
+    medicationToDelete?.let { medication ->
+        DeleteMedicationDialog(
+            medicationName = medication.name,
+            onConfirm = {
+                medicationViewModel.deleteMedication(medication)
+                medicationToDelete = null
+            },
+            onDismiss = { medicationToDelete = null }
+        )
     }
 }
 

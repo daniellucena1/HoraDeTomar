@@ -14,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import br.upe.horaDeTomar.data.entities.Medication
 import br.upe.horaDeTomar.ui.components.AddHomePageCard
+import br.upe.horaDeTomar.ui.components.DeleteMedicationDialog
 import br.upe.horaDeTomar.ui.components.HeaderSection
 import br.upe.horaDeTomar.ui.components.MedicineHomePageCard
 import br.upe.horaDeTomar.ui.components.OptionsCard
@@ -42,6 +45,7 @@ fun MedicationsScreen(
     // States e ViewModel
     val medications by viewModel.medications.collectAsState()
     val alarmStateList by viewModel.alarmListState.collectAsState()
+    var medicationToDelete by remember { mutableStateOf<Medication?>(null) }
 
     val alarmsByMedicationId = remember(alarmStateList) {
         alarmStateList.groupBy { it.medicationId }
@@ -88,7 +92,9 @@ fun MedicationsScreen(
                         medicineName = medication.name,
                         dose = medication.dose,
                         time = timesText,
-                        imageUri = medication.imageUri
+                        imageUri = medication.imageUri,
+                        onEdit = { navController.navigate("editMedication/${medication.id}") },
+                        onDelete = { medicationToDelete = medication }
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                 }
@@ -103,6 +109,17 @@ fun MedicationsScreen(
                 .padding(end = 16.dp),
             onClick = { navController.navigate("registerMedication") },
             label = "Adicionar Remédio"
+        )
+    }
+
+    medicationToDelete?.let { medication ->
+        DeleteMedicationDialog(
+            medicationName = medication.name,
+            onConfirm = {
+                viewModel.deleteMedication(medication)
+                medicationToDelete = null
+            },
+            onDismiss = { medicationToDelete = null }
         )
     }
 }

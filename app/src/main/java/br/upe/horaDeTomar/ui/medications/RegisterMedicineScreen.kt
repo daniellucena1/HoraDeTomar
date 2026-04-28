@@ -47,6 +47,7 @@ import br.upe.horaDeTomar.ui.components.TakePhotoButton
 import br.upe.horaDeTomar.ui.themes.*
 import br.upe.horaDeTomar.util.createTempPictureUri
 import br.upe.horaDeTomar.util.persistImage
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -57,15 +58,33 @@ import java.util.Calendar
 fun RegisterMedicineScreen(
     viewModel: MedicationsViewModel = hiltViewModel(),
     navControler: NavController,
+    medicationId: Int = -1
 ) {
     var medicineName by remember { mutableStateOf("") }
     var via by remember { mutableStateOf("") }
     var dose by remember { mutableStateOf("") }
     val viaList = listOf("Oral", "Tópico", "Sublingual")
 
-    val currentTime = Calendar.getInstance() // mantém se você precisar depois
-
     val context = LocalContext.current
+
+    LaunchedEffect(medicationId) {
+        if (medicationId != -1) {
+            viewModel.loadMedicationForEditing(medicationId)
+        } else {
+            viewModel.updateMedicationCreationState(Medication(name = "", via = "", dose = "", userId = 1, imageUri = ""))
+            viewModel.clearPendingAlarms()
+        }
+    }
+
+    val medicationState = viewModel.medicationCreationState
+    LaunchedEffect(medicationState) {
+        if (medicationId != -1) {
+            medicineName = medicationState.name
+            via = medicationState.via
+            dose = medicationState.dose
+        }
+    }
+
     val focusManager = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -182,7 +201,7 @@ fun RegisterMedicineScreen(
                 },
                 placeholder = "Ex: 500mg",
                 capitalization = KeyboardCapitalization.None,
-                keyboardType = KeyboardType.Number,
+                keyboardType = KeyboardType.Text,
                 isError = isErrorOnDose,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -240,7 +259,7 @@ fun RegisterMedicineScreen(
                 )
             }
 
-            if (selectedImageUri != null) {
+            if (selectedImageUri != null || (medicationId != -1 && medicationState.imageUri.isNotBlank())) {
                 Spacer(Modifier.height(8.dp))
                 ElevatedCard(
                     modifier = Modifier
@@ -249,7 +268,7 @@ fun RegisterMedicineScreen(
                     colors = CardDefaults.elevatedCardColors(containerColor = green_card)
                 ) {
                     AsyncImage(
-                        model = selectedImageUri,
+                        model = selectedImageUri ?: medicationState.imageUri.toUri(),
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -263,30 +282,43 @@ fun RegisterMedicineScreen(
 
             RegisterButton(
                 onClick = {
-                    if (medicineName.isNotBlank() && via.isNotBlank() && dose.isNotBlank() && selectedImageUri != null) {
+                    if (medicineName.isNotBlank() && via.isNotBlank() && dose.isNotBlank()) {
                         coroutineScope.launch {
-                            val persistedPath = context.persistImage(selectedImageUri!!)
-                            val medication = Medication(
+                            val imageToPersist = selectedImageUri ?: if (medicationId != -1) Uri.parse(medicationState.imageUri) else null
+                            
+                            if (imageToPersist == null) {
+                                Toast.makeText(context, "Selecione uma imagem", Toast.LENGTH_LONG).show()
+                                return@launch
+                            }
+
+                            val persistedPath = if (selectedImageUri != null) {
+                                context.persistImage(selectedImageUri!!)
+                            } else {
+                                medicationState.imageUri
+                            }
+
+                            val medication = medicationState.copy(
                                 name = medicineName,
                                 via = via,
                                 dose = dose,
-                                userId = 1,
                                 imageUri = persistedPath
                             )
                             viewModel.updateMedicationCreationState(medication)
-                            viewModel.createMedication()
+                            
+                            if (medicationId == -1) {
+                                viewModel.createMedication()
+                            } else {
+                                viewModel.updateMedication()
+                            }
                             navControler.popBackStack()
                         }
                     } else {
                         isErrorOnMedicineName = medicineName.isBlank()
                         isErrorOnVia = via.isBlank()
                         isErrorOnDose = dose.isBlank()
-                        if (selectedImageUri == null) {
-                            Toast.makeText(context, "Selecione uma imagem", Toast.LENGTH_LONG).show()
-                        }
                     }
                 },
-                label = "Cadastrar Medicamento",
+                label = if (medicationId == -1) "Cadastrar Medicamento" else "Salvar Alterações",
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)

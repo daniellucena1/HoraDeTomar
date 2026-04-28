@@ -73,6 +73,26 @@ class MedicationsViewModel @Inject constructor(
         medicationCreationState = medication
     }
 
+    fun loadMedicationForEditing(medicationId: Int) {
+        viewModelScope.launch {
+            repository.getById(medicationId)?.let { med ->
+                medicationCreationState = med
+                val alarms = alarmRepository.getAlarmsForMedicationOnce(medicationId)
+                pendingAlarms.clear()
+                pendingAlarms.addAll(alarms)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    suspend fun updateMedication() {
+        repository.update(medicationCreationState)
+        val existingAlarms = alarmRepository.getAlarmsForMedicationOnce(medicationCreationState.id)
+        existingAlarms.forEach { alarmScheduler.cancelAlarm(it) }
+        existingAlarms.forEach { alarmRepository.delete(it) }
+        saveAllPendingAlarmsForMedication(medicationCreationState.id)
+    }
+
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     suspend fun createMedication() {
         val newMedicationId = repository.insert(medicationCreationState).toInt()
@@ -116,6 +136,19 @@ class MedicationsViewModel @Inject constructor(
         viewModelScope.launch {
             alarmRepository.delete(alarm)
             if (alarm.isScheduled) alarmScheduler.cancelAlarm(alarm)
+        }
+    }
+
+    fun deleteMedication(medication: Medication) {
+        viewModelScope.launch {
+            val alarms = alarmRepository.getAlarmsForMedicationOnce(medication.id)
+            alarms.forEach { alarm ->
+                if (alarm.isScheduled) {
+                    alarmScheduler.cancelAlarm(alarm)
+                }
+                alarmRepository.delete(alarm)
+            }
+            repository.delete(medication)
         }
     }
 

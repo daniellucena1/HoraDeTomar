@@ -24,10 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import br.upe.horaDeTomar.navigation.BottomBarNav
 import br.upe.horaDeTomar.navigation.TopLevelsDestinations
@@ -59,7 +61,7 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = backStackEntry?.destination?.route.orEmpty()
 
-            val hideBarsOn = setOf("registerUser", "registerMedication")
+            val hideBarsOn = setOf("registerUser", "registerMedication", "editMedication/{medicationId}")
             val topLevelRoutes = TopLevelsDestinations.bottomNavItems.map { it.route }.toSet()
 
             val showTopBar = currentRoute !in hideBarsOn
@@ -151,6 +153,13 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
                     composable("registerMedication") {
                         RegisterMedicineScreen(navControler = navController)
                     }
+                    composable(
+                        route = "editMedication/{medicationId}",
+                        arguments = listOf(navArgument("medicationId") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val medicationId = backStackEntry.arguments?.getInt("medicationId") ?: -1
+                        RegisterMedicineScreen(navControler = navController, medicationId = medicationId)
+                    }
                     composable("registerUser") {
                         UserRegisterScreen(
                             onUserRegistered = {
@@ -163,7 +172,6 @@ fun MainScreen(viewModel: AccountViewModel = hiltViewModel()) {
                             isFirstTime = !hasAccount
                         )
                     }
-                    composable("editMedication/{medicationId}") { }
                 }
             }
         }
