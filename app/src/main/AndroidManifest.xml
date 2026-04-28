@@ -23,6 +23,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
@@ -78,6 +79,11 @@
         </provider>
 
         <receiver android:name=".data.manager.AlarmReceiver" android:exported="true" android:enabled="true" />
+        <receiver android:name=".data.manager.NotificationActionReceiver" android:exported="false" />
+
+        <service android:name=".data.manager.AlarmService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false" />
 
     </application>
 

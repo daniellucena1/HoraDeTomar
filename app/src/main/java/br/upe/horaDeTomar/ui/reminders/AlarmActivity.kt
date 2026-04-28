@@ -80,6 +80,9 @@ class AlarmActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Stop background service sound if it was playing from notification
+        stopService(Intent(this, br.upe.horaDeTomar.data.manager.AlarmService::class.java))
+
         val alarmId = intent.getIntExtra("alarmId", -1)
 
         mediaPlayer = MediaPlayer.create(this, R.raw.gran_vals )
